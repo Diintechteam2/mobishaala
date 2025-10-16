@@ -80,10 +80,9 @@ const Partners = () => {
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
           Students Working With Top Companies <span className="text-purple-600">Like</span>
-        </h2>
-        <motion.div
+          <motion.div
           className="inline-block ml-2"
           animate={{ rotate: [0, 10, -10, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
@@ -92,6 +91,8 @@ const Partners = () => {
             <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" />
           </svg>
         </motion.div>
+        </h2>
+        
       </motion.div>
 
       {/* Top Row - Scrolling Left to Right */}
