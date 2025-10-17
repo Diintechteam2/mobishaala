@@ -90,11 +90,11 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-900 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-white via-primary/5 to-white relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-primary opacity-5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-500 opacity-5 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-72 h-72 bg-primary opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-primary-dark opacity-5 rounded-full blur-3xl"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -111,7 +111,7 @@ const Testimonials = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+            className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
           >
             Loved by{' '}
             <span className="gradient-text">Aspirants Across India</span>
@@ -121,7 +121,7 @@ const Testimonials = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
             Join thousands of successful candidates who transformed their Mains preparation with mAIns
           </motion.p>
@@ -147,14 +147,14 @@ const Testimonials = () => {
               className="group relative"
             >
               {/* Card */}
-              <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 shadow-sm">
                 {/* Rating */}
                 <div className="mb-4">
                   <StarRating rating={testimonial.rating} />
                 </div>
 
                 {/* Content */}
-                <p className="text-gray-300 leading-relaxed mb-6 italic">
+                <p className="text-gray-700 leading-relaxed mb-6">
                   "{testimonial.content}"
                 </p>
 
@@ -164,10 +164,10 @@ const Testimonials = () => {
                     {testimonial.avatar}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white group-hover:text-primary transition-colors duration-300">
+                    <h4 className="font-semibold text-gray-900 group-hover:text-primary transition-colors duration-300">
                       {testimonial.name}
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500">
                       {testimonial.role}
                     </p>
                   </div>
@@ -205,7 +205,7 @@ const Testimonials = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="btn-primary text-lg px-8 py-4"
+            className="bg-primary text-white rounded-lg px-8 py-4 text-lg hover:bg-primary-dark"
           >
             Read More Reviews
           </motion.button>

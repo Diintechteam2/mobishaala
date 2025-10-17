@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import BrandLogo from './BrandLogo';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isElevated, setIsElevated] = useState(false);
+  const [openDesktopMenuIndex, setOpenDesktopMenuIndex] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setIsElevated(window.scrollY > 10);
@@ -12,27 +15,61 @@ const Navbar = () => {
   }, []);
 
   const menu = [
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Product', href: '#product' },
-    { name: 'Solutions', href: '#solutions' },
-    { name: 'Resources', href: '#resources' },
-    { name: 'Company', href: '#company' },
+    { name: 'Home', href: '/' },
+    {
+      name: 'Products', href: '/products', children: [
+        { name: 'For Institutes', href: '/institutes' },
+        { name: 'For Individual Teachers', href: '/teachers' },
+        { name: 'For Coaching Aggregators', href: '/aggregators' },
+      ]
+    },
+    { name: 'Partners', href: '/partners' },
+    {
+      name: 'Resources', href: '/resources', children: [
+        { name: 'Blogs & Articles', href: '/blogs' },
+        { name: 'Case Studies', href: '/case-studies' },
+        { name: 'Success Stories', href: '/success-stories' },
+        { name: 'Help Center / FAQs', href: '/help-center' },
+        { name: 'Video Tutorials', href: '/video-tutorials' },
+      ]
+    },
+    {
+      name: 'About Us', href: '/about', children: [
+        { name: 'Contact Us', href: '/contact' },
+        { name: 'About Mobishaala', href: '/about-mobishaala' },
+        { name: 'Leadership Team', href: '/leadership' },
+        { name: 'Milestones / Partners', href: '/milestones' },
+      ]
+    },
   ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Top contact bar */}
-      <div className="hidden md:block bg-gray-50 text-gray-700 text-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10">
+      {/* Top contact bar (now responsive) */}
+      <div className="bg-gray-50 text-gray-700 text-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 hidden md:flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <a href="tel:+919212992129" className="hover:text-black transition-colors">
-              Talk to Sales: +91 92129 92129
+            <a href="tel:+919549718846" className="hover:text-black transition-colors">
+              Talk to Sales: +91 95497 18846
             </a>
             <a href="mailto:hello@mobishaala.com" className="hover:text-black transition-colors">
-              hello@mobishaala.com
+              contact@mobishaala.com
             </a>
           </div>
-          <a href="#login" className="hover:text-black transition-colors">Login</a>
+          <a href="#login" className="inline-flex items-center gap-2 rounded-full border border-primary text-primary px-3 py-1.5 text-xs font-semibold hover:bg-primary hover:text-white transition-colors">Teacher Login / Student Login</a>
+        </div>
+        {/* Mobile layout */}
+        <div className="md:hidden border-b border-gray-200">
+          <div className="px-3 py-2 flex items-center justify-between gap-2 text-gray-800">
+            <a href="tel:+919549718846" className="inline-flex items-center gap-2 text-sm">
+              <svg className="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45c.84.27 1.71.45 2.61.57A2 2 0 0 1 22 16.92z"/></svg>
+              <span className="font-medium">+91 95497 18846</span>
+            </a>
+            <a href="#login" className="inline-flex items-center rounded-full border border-primary text-primary px-3 py-1 text-xs font-semibold hover:bg-primary hover:text-white transition-colors">Login</a>
+          </div>
+          <div className="px-3 pb-2 text-xs text-gray-700 truncate">
+            <a href="mailto:hello@mobishaala.com" className="truncate block">contact@mobishaala.com</a>
+          </div>
         </div>
       </div>
 
@@ -44,18 +81,49 @@ const Navbar = () => {
         className={`bg-white ${isElevated ? 'shadow-sm' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <a href="#home" className="flex items-center gap-2">
-              <img src="/mobishaala.com_logo.png" alt="Mobishaala" className="h-8 w-auto" />
-            </a>
+            <Link to="/" className="flex items-center gap-2">
+              <div className="h-28 sm:h-28 md:h-36 lg:h-40 w-auto flex items-center">
+                <img src="/moboshaalanewlogoback.png" alt="Mobishaala" className="h-full w-auto object-contain" />
+              </div>
+            </Link>
 
-            {/* Desktop menu */}
-            <div className="hidden md:flex items-center gap-8">
-              {menu.map((item) => (
-                <a key={item.name} href={item.href} className="text-gray-700 hover:text-black font-medium">
-                  {item.name}
-                </a>
+            {/* Desktop menu with dropdowns (hover + click to keep open) */}
+            <div className="hidden md:flex items-center gap-6">
+              {menu.map((item, idx) => (
+                <div
+                  key={item.name}
+                  className="relative group"
+                  onMouseEnter={() => item.children && setOpenDesktopMenuIndex(idx)}
+                  onMouseLeave={() => item.children && setOpenDesktopMenuIndex((prev) => (prev === idx ? null : prev))}
+                >
+                  <div className="flex items-center">
+                    <Link to={item.href} className="text-gray-700 hover:text-black font-medium px-1 py-2 inline-block">
+                      {item.name}
+                    </Link>
+                    {item.children && (
+                      <button
+                        aria-label="Toggle dropdown"
+                        className={`ml-1 text-gray-500 hover:text-gray-800 transition-transform ${openDesktopMenuIndex === idx ? 'rotate-180' : ''}`}
+                        onClick={(e) => { e.preventDefault(); setOpenDesktopMenuIndex((prev) => prev === idx ? null : idx); }}
+                      >
+                        <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                  {item.children && (
+                    <div className={`absolute left-0 mt-2 ${openDesktopMenuIndex === idx ? 'block' : 'hidden group-hover:block'} min-w-[240px] bg-white border border-gray-200 rounded-lg shadow-lg py-2`} onMouseEnter={() => setOpenDesktopMenuIndex(idx)}>
+                      {item.children.map((child) => (
+                        <Link key={child.name} to={child.href} className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                          {child.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -63,7 +131,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-3">
               <a
                 href="#start"
-                className="rounded-full bg-teal-500 text-white px-4 py-2 text-sm font-semibold hover:bg-teal-600 transition-colors"
+                className="rounded-full bg-primary text-white px-4 py-2 text-sm font-semibold hover:bg-primary-dark transition-colors"
               >
                 TRY FOR FREE
               </a>
@@ -85,23 +153,41 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile menu */}
+          {/* Mobile menu with accordions */}
           {isMobileMenuOpen && (
             <div className="md:hidden pb-4">
-              <div className="grid gap-2">
+              <div className="grid gap-1">
                 {menu.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="px-3 py-2 rounded-md text-gray-800 hover:bg-gray-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </a>
+                  <div key={item.name} className="border-b border-gray-100">
+                    <Link
+                      to={item.href}
+                      className="flex items-center justify-between px-3 py-3 text-gray-900 font-medium"
+                      onClick={() => !item.children && setIsMobileMenuOpen(false)}
+                    >
+                      {item.name}
+                      {item.children && (
+                        <span className="text-gray-400">▾</span>
+                      )}
+                    </Link>
+                    {item.children && (
+                      <div className="pl-4 pb-2">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.href}
+                            className="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
                 <a
                   href="#start"
-                  className="mt-2 inline-block text-center rounded-full bg-teal-500 text-white px-5 py-2 font-semibold"
+                  className="mt-2 inline-block text-center rounded-full bg-primary text-white px-5 py-2 font-semibold"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   TRY FOR FREE

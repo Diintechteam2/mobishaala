@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 
 const Highlight = ({ children }) => (
   <motion.span
-    className="px-3 py-1 rounded-md bg-green-400 text-black font-bold"
+    className="px-3 py-1 rounded-md bg-primary text-white font-bold"
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.2, duration: 0.6 }}
@@ -68,7 +68,7 @@ const Hero = () => {
   }
 
   return (
-    <section id="home" className="pt-20 md:pt-32 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
+    <section id="home" className="pt-[150px] md:pt-32 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: Headline and CTAs */}
@@ -99,7 +99,7 @@ const Hero = () => {
             {/* CTA Buttons */}
             <motion.div className="mt-8 flex items-center gap-4" variants={itemVariants}>
               <motion.button
-                className="bg-black text-white px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors shadow-lg"
+                className="bg-primary text-white px-8 py-3 rounded-lg font-bold text-lg hover:bg-primary-dark transition-colors shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -115,7 +115,7 @@ const Hero = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  className="h-7 w-7 text-teal-500"
+                  className="h-7 w-7 text-primary"
                 >
                   <path
                     strokeLinecap="round"
@@ -162,12 +162,12 @@ const Hero = () => {
 
             {/* Decorative Elements */}
             <motion.div
-              className="absolute top-1/4 -left-8 w-20 h-20 bg-teal-400 rounded-full opacity-20 blur-2xl"
+              className="absolute top-1/4 -left-8 w-20 h-20 bg-primary rounded-full opacity-20 blur-2xl"
               animate={{ y: [0, 20, 0] }}
               transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
             />
             <motion.div
-              className="absolute bottom-1/4 -right-8 w-24 h-24 bg-green-400 rounded-full opacity-20 blur-2xl"
+              className="absolute bottom-1/4 -right-8 w-24 h-24 bg-primary-dark rounded-full opacity-20 blur-2xl"
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
             />

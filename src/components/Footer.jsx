@@ -4,210 +4,117 @@ import { motion } from 'framer-motion';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = {
-    product: [
-      { name: 'Features', href: '#features' },
-      { name: 'Pricing', href: '#pricing' },
-      { name: 'How It Works', href: '#how-it-works' },
-      { name: 'Demo', href: '#demo' }
-    ],
-    company: [
-      { name: 'About Us', href: '#about' },
-      { name: 'Careers', href: '#careers' },
-      { name: 'Blog', href: '#blog' },
-      { name: 'Press', href: '#press' }
-    ],
-    support: [
-      { name: 'Help Center', href: '#help' },
-      { name: 'Contact Us', href: '#contact' },
-      { name: 'Privacy Policy', href: '#privacy' },
-      { name: 'Terms of Service', href: '#terms' }
-    ],
-    social: [
-      { name: 'LinkedIn', href: '#', icon: '💼' },
-      { name: 'Twitter', href: '#', icon: '🐦' },
-      { name: 'YouTube', href: '#', icon: '📺' },
-      { name: 'Instagram', href: '#', icon: '📷' }
-    ]
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
     }
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } }
   };
 
+  const destinations = [
+    { name: 'Delhi', img: 'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=300' },
+    { name: 'Mumbai', img: 'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=300' },
+    { name: 'Bengaluru', img: 'https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=300' },
+    { name: 'Dubai', img: 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?q=80&w=300' },
+    { name: 'Singapore', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=300' },
+    { name: 'Thailand', img: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=300' },
+  ];
+
   return (
-    <footer className="bg-gray-900 relative overflow-hidden min-h-screen">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="py-16"
-        >
-          {/* Main Footer Content */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            {/* Brand Section */}
-            <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-2">
-              <div className="mb-">
-                <img 
-                  src="/mAInslogo_withoutBackground.png" 
-                  alt="mAIns Logo" 
-                  className="h-24 w-auto"
-                />
+    <footer className="bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          {/* Top Card */}
+          <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 md:p-10">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Col 1 - About */}
+              <div>
+                <div className="text-xs font-bold tracking-widest text-gray-500 mb-4">ABOUT MOBISHAALA</div>
+                <ul className="space-y-2">
+                  {['About Us','We Are Hiring','Mobishaala Reviews','Terms & Conditions','Privacy Policy','Support','Beware of Frauds'].map((t) => (
+                    <li key={t} className="text-sm text-gray-700 hover:text-primary cursor-pointer">{t}</li>
+                  ))}
+                </ul>
               </div>
-              <p className="text-gray-300 mb-6 max-w-md">
-                Revolutionizing UPSC/PCS Mains preparation with AI-powered evaluation and expert mentorship. 
-                Write smarter, rank higher.
-              </p>
-              <div className="flex space-x-4">
-                {footerLinks.social.map((social, index) => (
-                  <motion.a
-                    key={index}
-                    href={social.href}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-lg hover:bg-primary hover:text-black transition-all duration-300"
-                  >
-                    {social.icon}
-                  </motion.a>
-                ))}
+
+              {/* Col 2 - For Brands */}
+              <div>
+                <div className="text-xs font-bold tracking-widest text-gray-500 mb-4">FOR BRANDS</div>
+                <ul className="space-y-2">
+                  {['Partner With Us','Destination Marketing'].map((t) => (
+                    <li key={t} className="text-sm text-gray-700 hover:text-primary cursor-pointer">{t}</li>
+                  ))}
+                </ul>
               </div>
-            </motion.div>
 
-            {/* Product Links */}
-            <motion.div variants={itemVariants} className="col-span-1">
-              <h3 className="text-white font-semibold mb-4 text-lg">Product</h3>
-              <ul className="space-y-3">
-                {footerLinks.product.map((link, index) => (
-                  <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-gray-300 hover:text-primary transition-colors duration-300 text-sm sm:text-base"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+              {/* Col 3 - For Learners */}
+              <div>
+                <div className="text-xs font-bold tracking-widest text-gray-500 mb-4">FOR LEARNERS</div>
+                <ul className="space-y-2">
+                  {['Gift an Experience'].map((t) => (
+                    <li key={t} className="text-sm text-gray-700 hover:text-primary cursor-pointer">{t}</li>
+                  ))}
+                </ul>
+              </div>
 
-            {/* Company Links */}
-            <motion.div variants={itemVariants} className="col-span-1">
-              <h3 className="text-white font-semibold mb-4 text-lg">Company</h3>
-              <ul className="space-y-3">
-                {footerLinks.company.map((link, index) => (
-                  <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-gray-300 hover:text-primary transition-colors duration-300 text-sm sm:text-base"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Support Links */}
-            <motion.div variants={itemVariants} className="col-span-1">
-              <h3 className="text-white font-semibold mb-4 text-lg">Support</h3>
-              <ul className="space-y-3">
-                {footerLinks.support.map((link, index) => (
-                  <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-gray-300 hover:text-primary transition-colors duration-300 text-sm sm:text-base"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
-
-          {/* Newsletter Signup */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 mb-12"
-          >
-            <div className="text-center">
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">
-                Stay Updated with mAIns
-              </h3>
-              <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
-                Get the latest tips, strategies, and updates for UPSC/PCS Mains preparation delivered to your inbox
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary transition-colors duration-300 text-sm sm:text-base"
-                />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-primary px-6 py-3 text-sm sm:text-base"
-                >
-                  Subscribe
-                </motion.button>
+              {/* Col 4 - Destinations */}
+              <div>
+                <div className="text-xs font-bold tracking-widest text-gray-500 mb-4">POPULAR DESTINATIONS</div>
+                <div className="grid grid-cols-3 gap-3">
+                  {destinations.map((d) => (
+                    <div key={d.name} className="relative rounded-md overflow-hidden h-16 shadow">
+                      <img src={d.img} alt={d.name} className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/30" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-xs font-semibold tracking-wide">{d.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Bottom Section */}
-          <motion.div
-            variants={itemVariants}
-            className="pt-8 border-t border-gray-700"
-          >
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="text-gray-400 text-sm text-center md:text-left">
-                © {currentYear} mAIns.ai — Powered by Expert Mentors + AI
-              </div>
-              <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
-                <a href="#privacy" className="text-gray-400 hover:text-primary transition-colors duration-300">
-                  Privacy Policy
-                </a>
-                <a href="#terms" className="text-gray-400 hover:text-primary transition-colors duration-300">
-                  Terms of Service
-                </a>
-                <a href="#cookies" className="text-gray-400 hover:text-primary transition-colors duration-300">
-                  Cookie Policy
-                </a>
+          {/* Middle Separator with logo and social icons */}
+          <motion.div variants={itemVariants} className="mt-10">
+            <div className="h-px bg-gray-700" />
+            <div className="flex items-center justify-center gap-6 -mt-3">
+              <div className="px-4 bg-gray-900">
+                <img src="/mobishaala.com_logo.png" alt="Mobishaala" className="h-6 w-auto opacity-90" />
               </div>
             </div>
+            <div className="flex items-center justify-center gap-5 mt-6 text-gray-300">
+              <a href="#" aria-label="LinkedIn" className="hover:text-primary transition-colors">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.95v5.66H9.37V9h3.41v1.56h.05c.47-.9 1.62-1.85 3.34-1.85 3.57 0 4.23 2.35 4.23 5.4v6.34zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22 0H2C.9 0 0 .9 0 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2z"/></svg>
+              </a>
+              <a href="#" aria-label="Twitter" className="hover:text-primary transition-colors">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 7.09v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" className="hover:text-primary transition-colors">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6A3 3 0 00.5 6.2 31.3 31.3 0 000 12a31.3 31.3 0 00.5 5.8 3 3 0 002.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3 3 0 002.1-2.1A31.3 31.3 0 0024 12a31.3 31.3 0 00-.5-5.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+              </a>
+              <a href="#" aria-label="Instagram" className="hover:text-primary transition-colors">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2.2a2.8 2.8 0 110 5.6 2.8 2.8 0 010-5.6zM17.5 5.5a1 1 0 100 2 1 1 0 000-2z"/></svg>
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Bottom note */}
+          <motion.div variants={itemVariants} className="mt-8 text-center text-gray-400 text-xs leading-relaxed max-w-5xl mx-auto">
+            The content and images used on this site are copyright protected and copyrights vests with the respective owners. The usage of the content and images on this website is intended to promote the works and no endorsement of the artist shall be implied. Unauthorized use is prohibited and punishable by law.
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="mt-6 text-center text-gray-300 text-sm">
+            © {currentYear} Mobishaala.com All rights reserved.
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Floating elements */}
-      <div className="absolute bottom-20 left-20 w-2 h-2 bg-primary rounded-full opacity-30 animate-float"></div>
-      <div className="absolute top-20 right-20 w-1 h-1 bg-primary rounded-full opacity-20 animate-float-slow"></div>
-      <div className="absolute bottom-40 right-40 w-1.5 h-1.5 bg-primary rounded-full opacity-25 animate-float-fast"></div>
     </footer>
   );
 };
