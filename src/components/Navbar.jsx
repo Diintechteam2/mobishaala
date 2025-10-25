@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
 
-const Navbar = () => {
+const Navbar = ({ activeTab = 'institutes' }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isElevated, setIsElevated] = useState(false);
   const [openDesktopMenuIndex, setOpenDesktopMenuIndex] = useState(null);
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setIsElevated(window.scrollY > 10);
@@ -14,7 +15,79 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const menu = [
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Don't close if clicking on the toggle button
+      if (event.target.closest('button[aria-label="Toggle menu"]')) {
+        return;
+      }
+      
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+
+  const menu = activeTab === 'students' ? [
+    { name: 'Home', href: '/students' },
+    {
+      name: 'Products', href: '/students/products', children: [
+        { name: 'Online Courses', href: '/students/courses' },
+        { name: 'Study Materials', href: '/students/materials' },
+        { name: 'Practice Tests', href: '/students/tests' },
+      ]
+    },
+    { name: 'Partners', href: '/students/partners' },
+    {
+      name: 'Resources', href: '/students/resources', children: [
+        { name: 'Study Guides', href: '/students/guides' },
+        { name: 'Success Stories', href: '/students/success' },
+        { name: 'Help Center', href: '/students/help' },
+        { name: 'Video Tutorials', href: '/students/videos' },
+      ]
+    },
+    {
+      name: 'About Us', href: '/students/about', children: [
+        { name: 'Contact Us', href: '/students/contact' },
+        { name: 'Student Support', href: '/students/support' },
+        { name: 'Mentorship', href: '/students/mentorship' },
+      ]
+    },
+  ] : activeTab === 'publications' ? [
+    { name: 'Home', href: '/publications' },
+    {
+      name: 'Research', href: '/publications/research', children: [
+        { name: 'Research Papers', href: '/publications/papers' },
+        { name: 'Case Studies', href: '/publications/cases' },
+        { name: 'White Papers', href: '/publications/whitepapers' },
+      ]
+    },
+    { name: 'Journals', href: '/publications/journals' },
+    {
+      name: 'Resources', href: '/publications/resources', children: [
+        { name: 'Publication Guidelines', href: '/publications/guidelines' },
+        { name: 'Research Tools', href: '/publications/tools' },
+        { name: 'Citation Help', href: '/publications/citations' },
+        { name: 'Peer Review', href: '/publications/review' },
+      ]
+    },
+    {
+      name: 'About Us', href: '/publications/about', children: [
+        { name: 'Contact Us', href: '/publications/contact' },
+        { name: 'Editorial Board', href: '/publications/board' },
+        { name: 'Submission Process', href: '/publications/submit' },
+      ]
+    },
+  ] : [
     { name: 'Home', href: '/' },
     {
       name: 'Products', href: '/products', children: [
@@ -44,9 +117,9 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header className="fixed top-12 left-0 right-0 z-40">
       {/* Top contact bar (now responsive) */}
-      <div className="bg-gray-50 text-gray-700 text-sm">
+      <div className="bg-gray-50 text-gray-700 text-sm p-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 hidden md:flex items-center justify-between">
           <div className="flex items-center gap-6">
             <a href="tel:+919549718846" className="hover:text-black transition-colors">
@@ -84,13 +157,13 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="h-28 sm:h-28 md:h-36 lg:h-40 w-auto flex items-center">
+              <div className="h-28 sm:h-28 md:h-36 lg:h-36 w-auto flex items-center">
                 <img src="/moboshaalanewlogoback.png" alt="Mobishaala" className="h-full w-auto object-contain" />
               </div>
             </Link>
 
             {/* Desktop menu with dropdowns (hover + click to keep open) */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6">
               {menu.map((item, idx) => (
                 <div
                   key={item.name}
@@ -128,7 +201,7 @@ const Navbar = () => {
             </div>
 
             {/* CTAs */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               <a
                 href="#start"
                 className="rounded-full bg-primary text-white px-4 py-2 text-sm font-semibold hover:bg-primary-dark transition-colors"
@@ -137,10 +210,13 @@ const Navbar = () => {
               </a>
             </div>
 
-            {/* Mobile button */}
+            {/* Mobile/Tablet button */}
             <button
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100"
-              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 z-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMobileMenuOpen((v) => !v);
+              }}
               aria-label="Toggle menu"
             >
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -153,16 +229,16 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile menu with accordions */}
+          {/* Mobile/Tablet menu with accordions */}
           {isMobileMenuOpen && (
-            <div className="md:hidden pb-4">
+            <div ref={mobileMenuRef} className="lg:hidden pb-4 max-h-96 overflow-y-auto scrollbar-hide">
               <div className="grid gap-1">
                 {menu.map((item) => (
                   <div key={item.name} className="border-b border-gray-100">
                     <Link
                       to={item.href}
                       className="flex items-center justify-between px-3 py-3 text-gray-900 font-medium"
-                      onClick={() => !item.children && setIsMobileMenuOpen(false)}
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {item.name}
                       {item.children && (
