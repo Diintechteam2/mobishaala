@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import TabNavigation from './components/TabNavigation';
@@ -6,6 +6,7 @@ import InstitutesView from './components/InstitutesView';
 import StudentsView from './components/StudentsView';
 import PublicationsView from './components/PublicationsView';
 import Footer from './components/Footer';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 // Page placeholders
 import Home from './menu/Home';
@@ -33,6 +34,18 @@ export default function App() {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const [activeTab, setActiveTab] = useState('institutes');
+  // Keep tab context in sync on non-home routes based on pathname
+  useEffect(() => {
+    if (isHome) return;
+    const path = location.pathname || '';
+    if (path.startsWith('/students')) {
+      setActiveTab('students');
+    } else if (path.startsWith('/publications')) {
+      setActiveTab('publications');
+    } else {
+      setActiveTab('institutes');
+    }
+  }, [location.pathname, isHome]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -51,9 +64,12 @@ export default function App() {
         </>
       ) : (
         <>
+          <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
           <Navbar activeTab={activeTab} />
-          <div className="pt-24">
+          <div className="pt-36">
             <Routes>
+              {/* Footer Links */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               {/* Institute Pages */}
               <Route path="/products" element={<Products />} />
               <Route path="/partners" element={<PartnersPage />} />

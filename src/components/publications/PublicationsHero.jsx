@@ -146,8 +146,8 @@ const PublicationsHero = () => {
                 alt="Research and publications"
                 className="w-full h-full object-cover"
               />
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              {/* Overlay gradient (lighter for light theme) */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
             </motion.div>
 
             {/* Stat Card - Top Right */}

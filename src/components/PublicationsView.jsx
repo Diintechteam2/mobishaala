@@ -2,6 +2,7 @@ import React from 'react';
 import PublicationsHero from './publications/PublicationsHero';
 import PublicationsPartner from './publications/PublicationsPartner';
 import PublicationsTestimonials from './publications/PublicationsTestimonials';
+import PublicationsFAQ from './publications/PublicationsFAQ';
 
 const PublicationsView = () => {
   return (
@@ -9,6 +10,7 @@ const PublicationsView = () => {
       <PublicationsHero />
       <PublicationsPartner />
       <PublicationsTestimonials />
+      <PublicationsFAQ />
     </div>
   );
 };

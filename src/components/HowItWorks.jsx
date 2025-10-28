@@ -56,7 +56,7 @@ const HowItWorks = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-900 to-background relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-primary opacity-5 rounded-full blur-3xl"></div>
@@ -77,7 +77,7 @@ const HowItWorks = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+            className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
           >
             3-Step{' '}
             <span className="gradient-text">Smart Workflow</span>
@@ -87,7 +87,7 @@ const HowItWorks = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
             Simple, efficient, and designed for maximum learning impact
           </motion.p>
@@ -108,7 +108,7 @@ const HowItWorks = () => {
               className="relative group"
             >
               {/* Step Card */}
-              <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 relative overflow-hidden">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 relative overflow-hidden shadow-sm">
                 {/* Background gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
                 
@@ -126,10 +126,10 @@ const HowItWorks = () => {
 
                 {/* Content */}
                 <div className="relative z-10">
-                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
                     {step.title}
                   </h3>
-                  <p className="text-gray-300 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -161,7 +161,7 @@ const HowItWorks = () => {
         </motion.div>
 
         {/* Bottom CTA */}
-        <motion.div
+          <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
@@ -185,37 +185,37 @@ const HowItWorks = () => {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <div className="bg-gray-800 bg-opacity-30 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-4xl mx-auto shadow-sm">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
               Why This Works?
             </h3>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                 <div>
-                  <h4 className="font-semibold text-white">Immediate Feedback Loop</h4>
-                  <p className="text-gray-300 text-sm">Learn from mistakes while they're fresh in your mind</p>
+                  <h4 className="font-semibold text-gray-900">Immediate Feedback Loop</h4>
+                  <p className="text-gray-600 text-sm">Learn from mistakes while they're fresh in your mind</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                 <div>
-                  <h4 className="font-semibold text-white">Consistent Practice</h4>
-                  <p className="text-gray-300 text-sm">Daily prompts keep you on track and motivated</p>
+                  <h4 className="font-semibold text-gray-900">Consistent Practice</h4>
+                  <p className="text-gray-600 text-sm">Daily prompts keep you on track and motivated</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                 <div>
-                  <h4 className="font-semibold text-white">Expert Guidance</h4>
-                  <p className="text-gray-300 text-sm">Learn from UPSC veterans and subject experts</p>
+                  <h4 className="font-semibold text-gray-900">Expert Guidance</h4>
+                  <p className="text-gray-600 text-sm">Learn from UPSC veterans and subject experts</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                 <div>
-                  <h4 className="font-semibold text-white">Progress Tracking</h4>
-                  <p className="text-gray-300 text-sm">Visual charts show your improvement over time</p>
+                  <h4 className="font-semibold text-gray-900">Progress Tracking</h4>
+                  <p className="text-gray-600 text-sm">Visual charts show your improvement over time</p>
                 </div>
               </div>
             </div>

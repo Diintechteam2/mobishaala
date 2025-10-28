@@ -63,7 +63,7 @@ const WhoIsItFor = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background to-gray-900 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 right-20 w-72 h-72 bg-primary opacity-5 rounded-full blur-3xl"></div>
@@ -84,7 +84,7 @@ const WhoIsItFor = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+          className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
           >
             Who is{' '}
             <span className="gradient-text">mAIns</span>{' '}
@@ -95,7 +95,7 @@ const WhoIsItFor = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+          className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
             Whether you're a serious aspirant, coaching institute, or self-learner, mAIns adapts to your needs
           </motion.p>
@@ -121,7 +121,7 @@ const WhoIsItFor = () => {
               className="group relative"
             >
               {/* Card */}
-              <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 relative overflow-hidden">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 relative overflow-hidden shadow-sm">
                 {/* Background gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${audience.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
                 
@@ -132,7 +132,7 @@ const WhoIsItFor = () => {
                       {audience.icon}
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-primary transition-colors duration-300">
+                      <h3 className="text-2xl font-bold text-gray-900 group-hover:text-primary transition-colors duration-300">
                         {audience.title}
                       </h3>
                     </div>
@@ -141,19 +141,19 @@ const WhoIsItFor = () => {
 
                 {/* Description */}
                 <div className="relative z-10 mb-6">
-                  <p className="text-gray-300 leading-relaxed text-base sm:text-lg">
+                  <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
                     {audience.description}
                   </p>
                 </div>
 
                 {/* Features */}
                 <div className="relative z-10">
-                  <h4 className="font-semibold text-white mb-4">Key Benefits:</h4>
+                  <h4 className="font-semibold text-gray-900 mb-4">Key Benefits:</h4>
                   <ul className="space-y-2">
                     {audience.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center space-x-3">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="text-gray-300">{feature}</span>
+                        <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -188,11 +188,11 @@ const WhoIsItFor = () => {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="bg-gray-800 bg-opacity-30 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-4xl mx-auto shadow-sm">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
               Not sure if mAIns is right for you?
             </h3>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-600 mb-6">
               Take our quick assessment to get personalized recommendations based on your current preparation level and goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

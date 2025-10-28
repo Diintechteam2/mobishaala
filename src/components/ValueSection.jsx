@@ -65,7 +65,7 @@ const ValueSection = () => {
   };
 
   return (
-    <section id="features" className="py-20 bg-gradient-to-b from-background to-gray-900 relative overflow-hidden">
+    <section id="features" className="py-20 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary opacity-5 rounded-full blur-3xl"></div>
@@ -86,7 +86,7 @@ const ValueSection = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+          className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
           >
             Built for{' '}
             <span className="gradient-text">Mains Success</span>
@@ -96,7 +96,7 @@ const ValueSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+          className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
             Everything you need to excel in UPSC/PCS Mains, powered by AI and expert mentorship
           </motion.p>
@@ -122,7 +122,7 @@ const ValueSection = () => {
               className="group relative"
             >
               {/* Card */}
-              <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 h-full hover:border-primary transition-all duration-300 shadow-sm">
                 {/* Icon */}
                 <div className="mb-6">
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-3xl shadow-lg group-hover:shadow-xl transition-all duration-300`}>
@@ -131,10 +131,10 @@ const ValueSection = () => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors duration-300">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
                   {feature.title}
                 </h3>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
 

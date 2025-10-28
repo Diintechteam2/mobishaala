@@ -32,7 +32,7 @@ const FinalCTA = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-900 via-background to-gray-900 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-primary opacity-10 rounded-full blur-3xl"></div>
@@ -75,7 +75,7 @@ const FinalCTA = () => {
           {/* Main Headline */}
           <motion.h2
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-8 leading-tight break-words"
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight break-words"
           >
             Write{' '}
             <span className="gradient-text">Smarter.</span>
@@ -87,7 +87,7 @@ const FinalCTA = () => {
           {/* Subheadline */}
           <motion.p
             variants={itemVariants}
-            className="text-base sm:text-xl lg:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
+            className="text-base sm:text-xl lg:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed"
           >
             Join thousands of successful aspirants who transformed their Mains preparation with AI-powered evaluation and expert mentorship
           </motion.p>
@@ -120,24 +120,24 @@ const FinalCTA = () => {
           >
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">10,000+</div>
-              <div className="text-gray-300">Active Aspirants</div>
+              <div className="text-gray-600">Active Aspirants</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">6 Hours</div>
-              <div className="text-gray-300">Average Evaluation Time</div>
+              <div className="text-gray-600">Average Evaluation Time</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">95%</div>
-              <div className="text-gray-300">Satisfaction Rate</div>
+              <div className="text-gray-600">Satisfaction Rate</div>
             </div>
           </motion.div>
 
           {/* Additional Features */}
           <motion.div
             variants={itemVariants}
-            className="mt-16 bg-gray-800 bg-opacity-30 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 sm:p-8 max-w-5xl mx-auto"
+            className="mt-16 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 max-w-5xl mx-auto shadow-sm"
           >
-            <h3 className="text-2xl font-bold text-white mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">
               What You Get with Your Free Trial
             </h3>
             <div className="grid md:grid-cols-2 gap-6 text-left">
@@ -145,22 +145,22 @@ const FinalCTA = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">3 Free Answer Evaluations</h4>
-                    <p className="text-gray-300 text-sm">Experience our AI + expert evaluation system</p>
+                    <h4 className="font-semibold text-gray-900">3 Free Answer Evaluations</h4>
+                    <p className="text-gray-600 text-sm">Experience our AI + expert evaluation system</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">Daily Practice Prompts</h4>
-                    <p className="text-gray-300 text-sm">Curated questions from previous years</p>
+                    <h4 className="font-semibold text-gray-900">Daily Practice Prompts</h4>
+                    <p className="text-gray-600 text-sm">Curated questions from previous years</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">Progress Dashboard</h4>
-                    <p className="text-gray-300 text-sm">Track your improvement over time</p>
+                    <h4 className="font-semibold text-gray-900">Progress Dashboard</h4>
+                    <p className="text-gray-600 text-sm">Track your improvement over time</p>
                   </div>
                 </div>
               </div>
@@ -168,22 +168,22 @@ const FinalCTA = () => {
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">Expert Feedback</h4>
-                    <p className="text-gray-300 text-sm">Detailed insights from UPSC veterans</p>
+                    <h4 className="font-semibold text-gray-900">Expert Feedback</h4>
+                    <p className="text-gray-600 text-sm">Detailed insights from UPSC veterans</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">Mobile App Access</h4>
-                    <p className="text-gray-300 text-sm">Practice anywhere, anytime</p>
+                    <h4 className="font-semibold text-gray-900">Mobile App Access</h4>
+                    <p className="text-gray-600 text-sm">Practice anywhere, anytime</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-sm font-bold text-black mt-1">✓</div>
                   <div>
-                    <h4 className="font-semibold text-white">No Credit Card Required</h4>
-                    <p className="text-gray-300 text-sm">Start your journey risk-free</p>
+                    <h4 className="font-semibold text-gray-900">No Credit Card Required</h4>
+                    <p className="text-gray-600 text-sm">Start your journey risk-free</p>
                   </div>
                 </div>
               </div>
@@ -195,7 +195,7 @@ const FinalCTA = () => {
             variants={itemVariants}
             className="mt-12"
           >
-            <p className="text-lg text-gray-400">
+            <p className="text-lg text-gray-500">
               Ready to transform your UPSC/PCS Mains preparation?{' '}
               <span className="text-primary font-semibold">Start your free trial today!</span>
             </p>

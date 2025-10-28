@@ -85,7 +85,7 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-b from-background to-gray-900 relative overflow-hidden">
+    <section id="pricing" className="py-20 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 right-20 w-72 h-72 bg-primary opacity-5 rounded-full blur-3xl"></div>
@@ -106,7 +106,7 @@ const Pricing = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-bold text-white mb-6"
+          className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
           >
             Simple.{' '}
             <span className="gradient-text">Transparent.</span>{' '}
@@ -117,7 +117,7 @@ const Pricing = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
+          className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
             Choose the plan that fits your preparation needs and budget
           </motion.p>
@@ -131,13 +131,13 @@ const Pricing = () => {
           viewport={{ once: true }}
           className="flex justify-center mb-12"
         >
-          <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 rounded-full p-1 flex w-full max-w-[320px] sm:max-w-none">
+          <div className="bg-white border border-gray-200 rounded-full p-1 flex w-full max-w-[320px] sm:max-w-none shadow-sm">
             <button
               onClick={() => setIsAnnual(false)}
               className={`flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold transition-all duration-300 text-sm sm:text-base ${
                 !isAnnual
                   ? 'bg-primary text-black'
-                  : 'text-gray-300 hover:text-white'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               Monthly
@@ -147,7 +147,7 @@ const Pricing = () => {
               className={`flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold transition-all duration-300 text-sm sm:text-base ${
                 isAnnual
                   ? 'bg-primary text-black'
-                  : 'text-gray-300 hover:text-white'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               Annual
@@ -187,25 +187,25 @@ const Pricing = () => {
               )}
 
               {/* Card */}
-              <div className={`bg-gray-800 bg-opacity-50 backdrop-blur-sm border rounded-2xl p-8 h-full transition-all duration-300 ${
+              <div className={`bg-white border rounded-2xl p-8 h-full transition-all duration-300 shadow-sm ${
                 plan.popular 
-                  ? 'border-primary shadow-2xl shadow-primary/20' 
-                  : 'border-gray-700 hover:border-primary'
+                  ? 'border-primary shadow-2xl shadow-primary/10' 
+                  : 'border-gray-200 hover:border-primary'
               }`}>
                 {/* Header */}
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className="text-gray-300 text-sm mb-4">{plan.description}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
                   
                   {/* Price */}
                   <div className="mb-2">
                     {typeof plan.price[isAnnual ? 'annual' : 'monthly'] === 'number' ? (
                       <>
-                        <span className="text-4xl font-bold text-white">₹</span>
-                        <span className="text-5xl font-bold text-white">
+                        <span className="text-4xl font-bold text-gray-900">₹</span>
+                        <span className="text-5xl font-bold text-gray-900">
                           {plan.price[isAnnual ? 'annual' : 'monthly']}
                         </span>
-                        <span className="text-gray-300">/mo</span>
+                        <span className="text-gray-600">/mo</span>
                       </>
                     ) : (
                       <span className="text-3xl font-bold text-primary">Custom</span>
@@ -213,7 +213,7 @@ const Pricing = () => {
                   </div>
                   
                   {typeof plan.price[isAnnual ? 'annual' : 'monthly'] === 'number' && (
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-500 text-sm">
                       {isAnnual ? 'Billed annually' : 'Billed monthly'}
                     </p>
                   )}
@@ -225,7 +225,7 @@ const Pricing = () => {
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center space-x-3">
                         <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-black">✓</div>
-                        <span className="text-gray-300 text-sm">{feature}</span>
+                        <span className="text-gray-700 text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -268,11 +268,11 @@ const Pricing = () => {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="bg-gray-800 bg-opacity-30 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-4xl mx-auto shadow-sm">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
               Need a Custom Plan?
             </h3>
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-600 mb-6">
               We offer custom pricing for large groups, educational institutions, and special requirements
             </p>
             <motion.button
