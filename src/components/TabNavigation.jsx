@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
-const TabNavigation = ({ activeTab, onTabChange }) => {
+const TabNavigation = ({ activeTab, onTabChange, onLogoClick, isHomeActive = false }) => {
   const tabs = [
     { id: 'institutes', label: 'Institutes' },
     { id: 'students', label: 'Students' },
     { id: 'publications', label: 'Publications' }
   ];
 
-
   return (
     <div className="bg-gray-50 border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex space-x-8">
+        <div className="flex items-center space-x-8">
+          <button
+            onClick={() => (onLogoClick ? onLogoClick() : onTabChange('home'))}
+            className={`relative flex items-center gap-2 py-3 pr-6 border-r border-gray-200 transition-colors ${
+              isHomeActive ? 'text-primary' : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <img
+              src="/moboshaalanewlogo.png"
+              alt="Mobishaala"
+              className="h-8 w-auto object-contain"
+            />
+            <span className="text-sm font-semibold">Home</span>
+            {isHomeActive && (
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                layoutId="activeTab"
+                initial={false}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30
+                }}
+              />
+            )}
+          </button>
           {tabs.map((tab) => (
             <button
               key={tab.id}

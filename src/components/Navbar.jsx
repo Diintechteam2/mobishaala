@@ -119,8 +119,8 @@ const Navbar = ({ activeTab = 'institutes' }) => {
   return (
     <header className="fixed top-12 left-0 right-0 z-40">
       {/* Top contact bar (now responsive) */}
-      <div className="bg-gray-50 text-gray-700 text-sm p-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 hidden md:flex items-center justify-between">
+      {/* <div className="bg-gray-50 text-gray-700 text-sm p-2"> */}
+        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 hidden md:flex items-center justify-between">
           <div className="flex items-center gap-6">
             <a href="tel:+919549718846" className="hover:text-black transition-colors">
               Talk to Sales: +91 95497 18846
@@ -130,9 +130,9 @@ const Navbar = ({ activeTab = 'institutes' }) => {
             </a>
           </div>
           <a href="#login" className="inline-flex items-center gap-2 rounded-full border border-primary text-primary px-3 py-1.5 text-xs font-semibold hover:bg-primary hover:text-white transition-colors">Teacher Login / Student Login</a>
-        </div>
+        </div> */}
         {/* Mobile layout */}
-        <div className="md:hidden border-b border-gray-200">
+        {/* <div className="md:hidden border-b border-gray-200">
           <div className="px-3 py-2 flex items-center justify-between gap-2 text-gray-800">
             <a href="tel:+919549718846" className="inline-flex items-center gap-2 text-sm">
               <svg className="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45c.84.27 1.71.45 2.61.57A2 2 0 0 1 22 16.92z"/></svg>
@@ -143,8 +143,8 @@ const Navbar = ({ activeTab = 'institutes' }) => {
           <div className="px-3 pb-2 text-xs text-gray-700 truncate">
             <a href="mailto:hello@mobishaala.com" className="truncate block">contact@mobishaala.com</a>
           </div>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
       {/* Main navbar */}
       <motion.nav
