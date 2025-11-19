@@ -2,11 +2,13 @@ import React, { useMemo, useState } from 'react';
 import DslEnglishNavbar from './Navbar';
 import DslEnglishFooter from './Footer';
 import { dslEnglishCourses } from './coursesData';
+import { useNavigate } from 'react-router-dom';
 
 const categories = ['Spoken English', 'UPSC Interview', 'State PCS Interview', 'Corporate'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const DslEnglishAllCourses = () => {
+  const navigate = useNavigate();
   const [category, setCategory] = useState('Spoken English');
   const [language, setLanguage] = useState('All Languages');
   const [search, setSearch] = useState('');
@@ -20,8 +22,8 @@ const DslEnglishAllCourses = () => {
     });
   }, [category, language, search]);
 
-  const handleBuy = (title) => {
-    alert(`Checkout for "${title}" will be available soon.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/dsl-english/checkout/${courseId}`);
   };
 
   return (
@@ -87,7 +89,7 @@ const DslEnglishAllCourses = () => {
                   <span className="text-xs bg-primary/10 text-primary font-semibold px-2 py-1 rounded-full">{course.discount}% OFF</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition"
                 >
                   Buy Now

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { destinationIASCourses } from './coursesData';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = ['UPSC', 'UPSC Optional', 'UPSC English', 'State PCS'];
 const languages = ['All Languages', 'Hindi', 'English'];
@@ -11,6 +11,7 @@ const DestinationIASCourses = () => {
   const [activePhase, setActivePhase] = useState('All');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
 
+  const navigate = useNavigate();
   const filteredCourses = useMemo(() => {
     return destinationIASCourses.filter((course) => {
       const categoryMatch = course.category === activeCategory;
@@ -27,8 +28,8 @@ const DestinationIASCourses = () => {
     return ['All', ...Array.from(new Set(phases))];
   }, [activeCategory]);
 
-  const handleBuy = (courseTitle) => {
-    alert(`Thanks! We will open enrollment for "${courseTitle}" shortly.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/destination-ias/checkout/${courseId}`);
   };
 
   return (
@@ -114,7 +115,7 @@ const DestinationIASCourses = () => {
                   <span className="text-sm text-gray-400 line-through">₹{course.originalPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
                 >
                   BUY NOW

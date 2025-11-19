@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { examDrishtiCourses } from './coursesData';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = ['UPSC', 'State PCS', 'SSC/Banking', 'Interview', 'Add-on'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const ExamDrishtiCourses = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('UPSC');
   const [activeLanguage, setActiveLanguage] = useState('All Languages');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -18,8 +19,8 @@ const ExamDrishtiCourses = () => {
     });
   }, [activeCategory, activeLanguage]);
 
-  const handleBuy = (courseTitle) => {
-    alert(`Checkout for "${courseTitle}" will launch soon.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/examdrishti/checkout/${courseId}`);
   };
 
   return (
@@ -88,7 +89,7 @@ const ExamDrishtiCourses = () => {
                   <span className="text-sm text-gray-400 line-through">₹{course.originalPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
                 >
                   BUY NOW

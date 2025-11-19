@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { shashiKarnaCourses } from './coursesData';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = ['BPSC', 'JPSC', 'UPSC', 'Interview'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const ShashiKarnaCourses = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('BPSC');
   const [activeLanguage, setActiveLanguage] = useState('All Languages');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -18,8 +19,8 @@ const ShashiKarnaCourses = () => {
     });
   }, [activeCategory, activeLanguage]);
 
-  const handleBuy = (courseTitle) => {
-    alert(`Enrollment flow for "${courseTitle}" will be available soon.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/shashi-karna/checkout/${courseId}`);
   };
 
   return (
@@ -88,7 +89,7 @@ const ShashiKarnaCourses = () => {
                   <span className="text-sm text-gray-400 line-through">₹{course.originalPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
                 >
                   BUY NOW

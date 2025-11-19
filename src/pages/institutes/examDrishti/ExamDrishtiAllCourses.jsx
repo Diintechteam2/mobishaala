@@ -2,11 +2,13 @@ import React, { useMemo, useState } from 'react';
 import ExamDrishtiNavbar from './Navbar';
 import ExamDrishtiFooter from './Footer';
 import { examDrishtiCourses } from './coursesData';
+import { useNavigate } from 'react-router-dom';
 
 const categories = ['UPSC', 'State PCS', 'SSC/Banking', 'Interview', 'Add-on'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const ExamDrishtiAllCourses = () => {
+  const navigate = useNavigate();
   const [category, setCategory] = useState('UPSC');
   const [language, setLanguage] = useState('All Languages');
   const [search, setSearch] = useState('');
@@ -20,8 +22,8 @@ const ExamDrishtiAllCourses = () => {
     });
   }, [category, language, search]);
 
-  const handleBuy = (title) => {
-    alert(`Mobishaala checkout for "${title}" coming soon.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/examdrishti/checkout/${courseId}`);
   };
 
   return (
@@ -87,7 +89,7 @@ const ExamDrishtiAllCourses = () => {
                   <span className="text-xs bg-primary/10 text-primary font-semibold px-2 py-1 rounded-full">{course.discount}% OFF</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition"
                 >
                   Buy Now

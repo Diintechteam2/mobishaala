@@ -2,11 +2,13 @@ import React, { useMemo, useState } from 'react';
 import DestinationIASNavbar from './Navbar';
 import DestinationIASFooter from './Footer';
 import { destinationIASCourses } from './coursesData';
+import { useNavigate } from 'react-router-dom';
 
 const categories = ['UPSC', 'UPSC Optional', 'UPSC English', 'State PCS'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const DestinationIASAllCourses = () => {
+  const navigate = useNavigate();
   const [category, setCategory] = useState('UPSC');
   const [language, setLanguage] = useState('All Languages');
   const [search, setSearch] = useState('');
@@ -20,8 +22,8 @@ const DestinationIASAllCourses = () => {
     });
   }, [category, language, search]);
 
-  const handleBuy = (courseTitle) => {
-    alert(`Enrollment for "${courseTitle}" opening soon on Mobishaala checkout.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/destination-ias/checkout/${courseId}`);
   };
 
   return (
@@ -87,7 +89,7 @@ const DestinationIASAllCourses = () => {
                   <span className="text-xs bg-primary/10 text-primary font-semibold px-2 py-1 rounded-full">{course.discount}% OFF</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition"
                 >
                   Buy Now

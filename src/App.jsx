@@ -30,12 +30,16 @@ import PublicationsAbout from './menu/publications/PublicationsAbout';
 
 import DestinationIASPage from './pages/institutes/destinationIAS/DestinationIASPage';
 import DestinationIASAllCourses from './pages/institutes/destinationIAS/DestinationIASAllCourses';
+import DestinationIASCheckout from './pages/institutes/destinationIAS/DestinationIASCheckout';
 import ShashiKarnaPage from './pages/institutes/shashiKarna/ShashiKarnaPage';
 import ShashiKarnaAllCourses from './pages/institutes/shashiKarna/ShashiKarnaAllCourses';
+import ShashiKarnaCheckout from './pages/institutes/shashiKarna/ShashiKarnaCheckout';
 import DslEnglishPage from './pages/institutes/dslEnglish/DslEnglishPage';
 import DslEnglishAllCourses from './pages/institutes/dslEnglish/DslEnglishAllCourses';
+import DslEnglishCheckout from './pages/institutes/dslEnglish/DslEnglishCheckout';
 import ExamDrishtiPage from './pages/institutes/examDrishti/ExamDrishtiPage';
 import ExamDrishtiAllCourses from './pages/institutes/examDrishti/ExamDrishtiAllCourses';
+import ExamDrishtiCheckout from './pages/institutes/examDrishti/ExamDrishtiCheckout';
 
 const PageSection = ({ children }) => (
   <div className="pt-24">
@@ -98,12 +102,16 @@ export default function App() {
       <Routes>
         <Route path="/institutes/destination-ias" element={<DestinationIASPage />} />
         <Route path="/institutes/destination-ias/courses" element={<DestinationIASAllCourses />} />
+        <Route path="/institutes/destination-ias/checkout/:courseId" element={<DestinationIASCheckout />} />
         <Route path="/institutes/shashi-karna" element={<ShashiKarnaPage />} />
         <Route path="/institutes/shashi-karna/courses" element={<ShashiKarnaAllCourses />} />
+        <Route path="/institutes/shashi-karna/checkout/:courseId" element={<ShashiKarnaCheckout />} />
         <Route path="/institutes/dsl-english" element={<DslEnglishPage />} />
         <Route path="/institutes/dsl-english/courses" element={<DslEnglishAllCourses />} />
+        <Route path="/institutes/dsl-english/checkout/:courseId" element={<DslEnglishCheckout />} />
         <Route path="/institutes/examdrishti" element={<ExamDrishtiPage />} />
         <Route path="/institutes/examdrishti/courses" element={<ExamDrishtiAllCourses />} />
+        <Route path="/institutes/examdrishti/checkout/:courseId" element={<ExamDrishtiCheckout />} />
       </Routes>
     );
   } else if (isHome) {

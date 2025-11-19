@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { dslEnglishCourses } from './coursesData';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = ['Spoken English', 'UPSC Interview', 'State PCS Interview', 'Corporate'];
 const languages = ['All Languages', 'Hindi', 'English'];
 
 const DslEnglishCourses = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('Spoken English');
   const [activeLanguage, setActiveLanguage] = useState('All Languages');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -18,8 +19,8 @@ const DslEnglishCourses = () => {
     });
   }, [activeCategory, activeLanguage]);
 
-  const handleBuy = (courseTitle) => {
-    alert(`Registration for "${courseTitle}" will open soon.`);
+  const handleBuy = (courseId) => {
+    navigate(`/institutes/dsl-english/checkout/${courseId}`);
   };
 
   return (
@@ -88,7 +89,7 @@ const DslEnglishCourses = () => {
                   <span className="text-sm text-gray-400 line-through">₹{course.originalPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <button
-                  onClick={() => handleBuy(course.title)}
+                  onClick={() => handleBuy(course.id)}
                   className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
                 >
                   BUY NOW
