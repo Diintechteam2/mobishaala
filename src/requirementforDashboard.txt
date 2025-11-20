@@ -1,0 +1,263 @@
+Mobishaala Dashboard + Node Backend Requirement Doc
+===================================================
+
+1. Vision & Scope
+-----------------
+• Goal: ek central dashboard (Node.js backend ke saath) jahan se Mobishaala team pura website content (Home tab + Institutes, Students, Publications tabs + individual institute microsites + Coming Soon placeholder pages) ko manage, preview aur publish kar sake.  
+• Audience: internal content editors, sales/ops leads (data feed), super admins (tech).  
+• Outcomes: bina code change ke hero copy, CTAs, stats, logo sliders, podcast/media spotlight data, testimonials, FAQs, menu links, course catalogs, checkout info, institute-specific journeys sab update ho paye. Saath hi naye institutes ko add karna aur existing ko duplicate/edit karna possible ho.
+
+2. User Roles & Permissions
+---------------------------
+• Super Admin: role/feature toggles, publish rights, environment config, audit trail access.  
+• Content Editor: most modules ko draft/update, preview, submit for approval.  
+• Sales/Ops Contributor: institute/course data upload (CSV, form) but publish rights nahi.  
+• Reviewer: diff compare, approve/reject drafts.  
+• All actions audit log me store hon (user, timestamp, route, payload diff).
+
+3. Node Backend Expectations
+----------------------------
+• Stack: Node.js (Express/Nest/Fastify allowed), DB (MongoDB/Postgres), file store (S3/Cloudinary) for hero/media assets.  
+• APIs: versioned REST + optional GraphQL for preview clients. All endpoints JWT protected + role claims.  
+• Content model: modular blocks so React front-end components (src/components/*) ke props directly map ho sake. Schema per module niche define.  
+• Draft/Publish: har entity me `status` (draft, scheduled, published), `publishedAt`, `version`, `lastEditedBy`. Preview tokens generate karke front-end ko query param se draft fetch karne ka option.  
+• Localization: abhi EN hi, but schema me `locale` reserve karo future expansion ke liye.  
+• Scheduled jobs: Node cron/queue (BullMQ) for timed publishes, stale draft reminders, backup exports.  
+• Analytics hooks: write-only endpoint jisse site interactions (cta clicks, form submissions) backend ko bheji ja sake (store in `events` table/collection).
+
+4. Global Layout Modules
+------------------------
+4.1 Tab Navigation (`src/components/TabNavigation.jsx`)  
+• Fields: `tabs[]` list with `{id, label, route, order, isVisible}`; `logoAsset`, `homeLabel`.  
+• Actions: drag-reorder, toggle tab visibility, edit label/route, update brand logo (upload).  
+• Preview: instantly reflect active tab highlight + animation config (store numeric config? optional).  
+
+4.2 Navbar (`src/components/Navbar.jsx`)  
+• Context aware menus: 3 menu trees (home/institutes default, students, publications). ek schema `navigationContexts` with `contextId`, `menus[]`, each menu = `{name, href, children[]}`.  
+• Global CTA: text, target URL, tracking UTM.  
+• Contact strip (currently commented) ke liye toggles + fields (`salesPhone`, `supportEmail`, `loginCtaText`, `loginCtaUrl`).  
+• Mobile menu behavior config (accordion default open states).  
+
+4.3 Footer (`src/components/Footer.jsx`)  
+• Sections: About links, For Brands, For Learners, Popular Destinations, Social links, Legal copy.  
+• Schema idea: `footer.sections[]` (title, links[]), `footer.destinations[]` (name, image), `footer.social[]` (platform, iconId, url), `footer.legal`.  
+
+4.4 Coming Soon placeholder pages (`src/menu/ComingSoon.jsx`)  
+• Need module jahan se har slug ke liye title/subtitle/custom message set ho sake + optionally waitlist form embed.  
+• Extra fields: optional illustration, CTA button (text+url), expected launch date, owner notes.  
+
+4.5 Static Pages (Privacy Policy, Terms etc.)  
+• WYSIWYG/Markdown editor + versioning. Markdown ko HTML me convert karke front-end ko serve karo.
+
+5. Home Tab (default Institutes landing)
+---------------------------------------
+5.1 Hero (`src/components/Hero.jsx`)  
+• Content groups: highlight chips (array), headline text fragments, subheading, CTA button (text, url, style), secondary action (play button link).  
+• Right column: hero image (url, alt), stat cards (title/value/subcopy), promo offer card (headline, coupon code, terms), decorative blobs (color/animation).  
+• Dashboard controls: upload image, change stats, toggle offer, choose animation speed, set CTA analytics tag.  
+
+5.2 Partner Logos Marquee (`components/Partner.jsx`)  
+• Two marquee rows (top/bottom) with company list. Fields: `companies[row][{name, logoUrl}]`, scroll speed, hover effects.  
+• Stats tiles: list of `{number,label}`.  
+• Need file upload + alt text + ability to reorder/rescale.  
+
+5.3 One-for-all Platform Tabs (`components/algbunke/OneForAll.jsx`)  
+• Tabs array with `id`, `label`.  
+• Each tab detail: title, description, bullet list (`{title, desc, icon}`), supporting visual (image/video).  
+• Dashboard me rich text + emoji/icon picker + ability to add more tabs.  
+
+5.4 Podcast Carousel (`components/algbunke/Podcast.jsx`)  
+• Episode fields: `image`, `title`, `subtitle`, `ctaUrl`.  
+• Carousel config: cardsPerView, autoplay toggle, order.  
+• Provide quick import (YouTube/Spotify link -> auto fetch metadata).  
+
+5.5 Media Spotlight (`components/algbunke/MediaSpotlight.jsx`)  
+• Article fields: `image`, `title`, `source`, `sourceColor`, `date`, `link`.  
+• CTA button label + url (“View All Press”).  
+
+5.6 Testimonials (`components/Testimonials.jsx`)  
+• Testimonials array: `{name, role, content, rating, avatarType(emoji/upload)}`.  
+• Section metadata: heading, subheading, CTA button.  
+• Need sentiment/rating validation (1-5).  
+
+5.7 Institutes FAQ (`components/InstitutesFAQ.jsx`)  
+• Q/A list + Schema.org JSON-LD auto-generate.  
+• Dashboard must support reorder, toggle publish, mark featured.  
+
+6. Institutes Tab Specific Modules
+----------------------------------
+6.1 Hero (`components/institutes/InstitutesHero.jsx`) -> similar fields as Home hero but with badges array, CTAs (“Book a Demo”, “Download Deck”), stats, floating cards, highlight text.  
+6.2 Showcase (`components/institutes/InstitutesShowcase.jsx`) -> `institutes[]` with name, tagline, backgroundImg, logoImg, slug/link, highlight checklist. Need ability to add new cards (auto-wire route).  
+6.3 Solutions (`components/institutes/InstitutesSolutions.jsx`) -> `solutions[]` with icon (predefined set), title, description, highlights[].  
+6.4 Content Hub (`components/institutes/InstitutesContentHub.jsx`) -> `resources[]` (pill label, title, duration, link label, link url). Right panel highlight (image, overlay text).  
+6.5 Media Spotlight + Testimonials reuse but allow Institutes-specific variant content.  
+6.6 FAQ reuse or override (toggle “inherit from global” vs “custom”).  
+
+7. Students Tab Modules (`components/StudentsView.jsx`)
+-------------------------------------------------------
+• StudentsHero: highlight chips, headline text, description, CTA label, hero image, stats (“Courses completed”), student offer card (code, discount).  
+• StudentsPartner: marquee logos (IIT/IIM list). Manage two arrays, stats numbers (Partner Institutes, Expert Faculty, etc.).  
+• Shared modules (OneForAll, Podcast, MediaSpotlight) optionally allow `audienceVariant: students` override. Need flag to pick content source (global vs audience-specific).  
+• StudentsTestimonials (`components/students/StudentsTestimonials.jsx`) + StudentsFAQ: maintain separate dataset.  
+
+8. Publications Tab Modules (`components/PublicationsView.jsx`)
+--------------------------------------------------------------
+• PublicationsHero (headline, subcopy, CTA, stats).  
+• PublicationsPartner (list of partner logos specific to publishers).  
+• PublicationsTestimonials/FAQ (own dataset).  
+• Should share OneForAll/Podcast/Media modules but allow variant toggles similar to Students.
+
+9. Institutes Detail Microsites (Destination IAS, Shashi Karna, DSL English, ExamDrishti)
+----------------------------------------------------------------------------------------
+Structure from `src/pages/institutes/*`:
+• Custom Navbar/Footer per institute (logo, contact CTA, anchor links). Need ability to clone base template.  
+• Hero (`Hero.jsx`): badges, headline, paragraph, stat cards, inquiry form (fields: name, email, phone, focus dropdown). Dashboard me form builder (field label, placeholder, required flag). Submissions Node backend me `leads` table + CRM webhook.  
+• Courses (`Courses.jsx` + `coursesData.js`):  
+  - Global filters: categories list, languages list.  
+  - Course schema: `{id, title, description, category, phase, language, price, originalPrice, discount, image, badge}`.  
+  - Actions: CRUD, bulk CSV import, reorder, map course to checkout slug.  
+  - Filter metadata (phase labels) derived from data; allow manual alias.  
+• All Courses page + Checkout page need same dataset + ability to host marketing copy (per course highlights, FAQ).  
+• Journey (`Journey.jsx`): timeline steps (title, description, duration, icon).  
+• Platform (`Platform.jsx` if present) fields: features grid, icon, copy.  
+• Testimonials & FAQ per institute (similar structure).  
+• Checkout pages require: selected course details, upsell options, payment CTA (WhatsApp/Phone). Need API to fetch course by ID slug.  
+• Node backend should allow new institute creation wizard:  
+  1. Basic info (name, slug, hero assets).  
+  2. Choose template (UPSC style, language institute, etc).  
+  3. Upload course catalog.  
+  4. Configure forms + CTA numbers.  
+  5. Preview & publish (generate `/institutes/{slug}` routes).  
+
+10. Menu Pages (Products, Partners, Resources, About + Students/Publications subpages)
+-------------------------------------------------------------------------------------
+• Each file in `src/menu/*` is a page stub; need CMS blocks to store content/SEO even if currently simple.  
+• ComingSoon screens tied to these routes should pull dynamic title/subtitle/ETA + optional waitlist form.  
+• Provide toggle to convert a ComingSoon page into fully editable page (rich text, hero, CTA) without redeploy.
+
+11. Content Workflow & Dashboard UX
+-----------------------------------
+• Module Library: show list of components (Hero, Partner, etc) referencing React file path for context.  
+• Inline Preview: select breakpoint (mobile/desktop) + audience tab (home/institutes/students/publications).  
+• Draft vs Published diff viewer (highlight changed fields).  
+• Activity log per module.  
+• Bulk ops: duplicate module across audience, revert to older version, export JSON for backup.  
+• Validation:  
+  - Required fields (hero headline, CTA).  
+  - Price fields numeric, discount <= 100.  
+  - URL validation.  
+  - Image dimensions suggestions (hero min 1200x800).  
+• Asset management: show library of uploaded logos/images, track usage.  
+• Global search to find text references across modules.  
+
+12. API Endpoints (Illustrative)
+-------------------------------
+• `POST /auth/login`, `POST /auth/refresh`.  
+• `GET/POST /content/modules/:moduleKey` (moduleKey example: `homeHero`, `studentsTestimonials`).  
+• `POST /content/publish` with payload referencing modules + target routes.  
+• `GET /navigation/context/:id` (home/institutes/students/publications).  
+• `GET /institutes` -> list metadata; `POST /institutes`, `PATCH /institutes/:id`.  
+• `GET /institutes/:slug/courses`, `POST /institutes/:slug/courses`.  
+• `POST /leads` (forms), `GET /leads` (role restricted).  
+• `POST /uploads` -> returns asset URL + metadata.  
+• `GET /preview?token=...` to fetch draft snapshot.  
+• Webhooks: `POST /webhooks/zapier`, `POST /webhooks/crm` for lead sync.  
+
+13. Data Model Cheat Sheet
+--------------------------
+• `Module` collection/table: `{moduleKey, audience, data(jsonb), status, version, updatedBy}`.  
+• `Institute`: `{id, name, slug, tagline, logo, heroConfig, contactInfo, modules[], isPublished}`.  
+• `Course`: tie to instituteId.  
+• `MenuContext`: store navbar structure.  
+• `ComingSoonPage`: `{route, title, subtitle, eta, formConfig}`.  
+• `Asset`: file metadata, usage refs.  
+• `Lead`: capture form submissions + tags (`sourceRoute`).  
+
+14. Quality, Security, Observability
+------------------------------------
+• Input sanitization + rate limiting on lead forms (reCAPTCHA).  
+• Role-based access for API + UI (CASL/OPA).  
+• Error logging (Winston + CloudWatch/LogDNA).  
+• Metrics: publish latency, API latency, asset bandwidth.  
+• Backups: nightly snapshot of content + assets map.  
+• Testing: unit (schema validation), integration (publish flow), e2e (Cypress hitting preview).  
+
+15. Delivery Roadmap Suggestion
+-------------------------------
+Phase 1 (MVP)  
+• Auth, module CRUD, global navigation/footer, Home tab components, ComingSoon editor, basic institute listing.  
+
+Phase 2  
+• Audience variants (students/publications), institute microsite builder (hero+courses), lead capture + CRM webhook, draft/publish.  
+
+Phase 3  
+• Advanced features: scheduling, analytics dashboard, asset library insights, multi-language prep, workflow approvals.  
+
+16. Success Metrics
+-------------------
+• 100% of homepage + tab content editable without code.  
+• <15 mins to launch new institute microsite from dashboard.  
+• Lead response automation integrated (Node backend pushes to CRM).  
+• Version history available for all modules (retain last 20 versions).  
+
+17. Visual Builder & Theme Controls (WordPress-style Experience)
+---------------------------------------------------------------
+• Responsive preview: split-pane view where left pane me form-based inputs, right pane me live preview with breakpoints toggle (mobile/tablet/desktop) + theme switcher (light/dark). Changes apply in draft preview instantly via local JSON state (no publish).  
+• Color & typography system: maintain global design tokens (`colors.primary`, `colors.secondary`, gradients, typography scale, spacing). Dashboard me theme editor ho jo color pickers + contrast warnings de. Publishing theme tokens should recompile CSS variables (Tailwind CSS custom properties).  
+• Layout templates: allow users to switch hero layout (image left vs right), testimonials grid variants, etc. Provide visual thumbnails similar to page builders.  
+• Block-level controls: for each component, show collapsible accordion with field groups (e.g., “Hero → Headline”, “Hero → CTA buttons”).  
+• Media library picker with cropping + compression.  
+• Preview data overlays: show bounding boxes on preview to highlight which form section edits which component.  
+• Undo/redo within draft editing session.
+
+18. Form-First Editing Paradigm
+-------------------------------
+• All content entry strictly via structured forms (no inline text editing) to keep schema consistent. Use dynamic form engine (React Hook Form + Zod/Yup for validation).  
+• Field types: text, textarea, WYSIWYG/Markdown, select, multi-select, color picker, number, currency, percentage, image upload, repeater (array).  
+• Provide “Add Item” flow for arrays (e.g., testimonials). For reorder, use drag handle within form list.  
+• Validation hints + real-time character counts (headlines 90 chars, CTA 30 chars).  
+• Form wizard for complex objects (e.g., new institute). Save progress per step.  
+• Auto-save drafts every 30s with toast notifications.  
+• Accessibility helpers: enforce alt text fields for every image upload.  
+
+19. Dashboard Frontend Tech Stack & Libraries
+---------------------------------------------
+• Preferred stack: React + Vite (pure client-side SPA). Stick to JavaScript (no Next.js/TypeScript). Styling via Tailwind CSS + Headless UI or Chakra UI for accessible primitives.  
+• Component library options (JS-compatible):  
+  - Material UI (rich form controls + data grid)  
+  - Ant Design (enterprise-friendly layout, cascader, tree select)  
+  - Radix UI + Tailwind for fully custom look  
+• State management: React Query/TanStack Query for API cache + optimistic updates; Zustand or Redux Toolkit for global UI state if needed (JS versions).  
+• Forms: React Hook Form + Zod (JS variant via `zod` + JSDoc) for schema validation; integrate `react-dropzone` for uploads; `react-colorful` for color pickers.  
+• Layout/preview: `react-resizable-panels` or `Split.js` for side-by-side builder. Use `framer-motion` for smooth preview transitions (same lib as marketing site).  
+• Tables/Lists: TanStack Table for leads, course catalogs; support sorting/filtering.  
+• Charts (optional analytics view): Recharts / Nivo.  
+• Rich text: TipTap or Lexical for WYSIWYG, with Markdown export (vanilla JS integrations).  
+• Authentication UI: custom JWT storage + React Router guards (since no Next.js).  
+
+20. Multi-Screen Preview & Theme Sync
+-------------------------------------
+• Breakpoint toolbar: icons for 360px, 768px, 1024px, 1440px widths. Preview iframe reloads draft JSON by calling `/preview?token`.  
+• Theme tokens stored in backend; preview injects CSS variables so marketing site + dashboard preview consistent.  
+• Option to preview specific audience route (e.g., `/students`) or institute slug. Provide dropdown search to jump between pages.  
+• Device frames (phone/tablet) optional for stakeholder demos.  
+
+21. Interaction & Color Customization
+-------------------------------------
+• CTA buttons: allow editing label, URL, style (filled/outline/ghost), icon toggles, gradient selection.  
+• Backgrounds: each section can choose gradient presets or custom color, plus overlay opacity slider.  
+• Animation controls: enable/disable framer-motion sequences, adjust durations, toggle marquee speed.  
+• Icon library integration (Lucide/Phosphor) so editors can swap icons via searchable picker.  
+• Provide preview of color contrast compliance (WCAG) when editors change text/background colors.  
+
+22. Additional Considerations
+-----------------------------
+• Library usage transparency: document chosen frontend libraries inside dashboard so future devs know dependencies.  
+• Plugin-style extension: design schema so new components can be registered with metadata (fields, preview component).  
+• Migration plan: script to ingest current hard-coded content from React files into database (JSON export/import).  
+• Feature flags: allow partial rollout of new dashboard modules; integrate LaunchDarkly/self-built flags.  
+• Performance: lazy-load component editors; prefetch frequently accessed modules.  
+• Security: enforce CSRF protection on form submissions, HTTP-only cookies for session.  
+
+Is document ke basis par backend engineers data schema + API contract finalize kar sakte hain, aur dashboard UX team ko exact fields mil jate hain jisse React components ka har “word/line” backend configurable ban sake.
+

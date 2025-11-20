@@ -7,6 +7,7 @@ import InstitutesView from './components/InstitutesView';
 import StudentsView from './components/StudentsView';
 import PublicationsView from './components/PublicationsView';
 import Footer from './components/Footer';
+import DashboardApp from './dashboard/DashboardApp';
 import PrivacyPolicy from './components/PrivacyPolicy';
 
 // Page placeholders
@@ -51,10 +52,14 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
+  const isDashboardRoute = location.pathname.startsWith('/dashboard');
   const isInstituteDetailRoute = location.pathname.startsWith('/institutes/') && location.pathname !== '/institutes';
   const [activeTab, setActiveTab] = useState('home');
   // Keep tab context in sync on non-home routes based on pathname
   useEffect(() => {
+    if (isDashboardRoute) {
+      return;
+    }
     if (isHome) {
       if (activeTab !== 'home') {
         setActiveTab('home');
@@ -69,7 +74,7 @@ export default function App() {
     } else {
       setActiveTab('institutes');
     }
-  }, [location.pathname, isHome, activeTab]);
+  }, [location.pathname, isHome, activeTab, isDashboardRoute]);
 
   useEffect(() => {
     window.scrollTo({
@@ -94,6 +99,14 @@ export default function App() {
     }
   };
 
+
+  if (isDashboardRoute) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <DashboardApp />
+      </div>
+    );
+  }
 
   let content = null;
 
