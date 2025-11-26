@@ -8,6 +8,8 @@ import StudentsView from './components/StudentsView';
 import PublicationsView from './components/PublicationsView';
 import Footer from './components/Footer';
 import DashboardApp from './dashboard/DashboardApp';
+import InstituteDashboardApp from './institute-dashboard/InstituteDashboardApp';
+import Login from './dashboard/pages/Login';
 import PrivacyPolicy from './components/PrivacyPolicy';
 
 // Page placeholders
@@ -41,6 +43,9 @@ import DslEnglishCheckout from './pages/institutes/dslEnglish/DslEnglishCheckout
 import ExamDrishtiPage from './pages/institutes/examDrishti/ExamDrishtiPage';
 import ExamDrishtiAllCourses from './pages/institutes/examDrishti/ExamDrishtiAllCourses';
 import ExamDrishtiCheckout from './pages/institutes/examDrishti/ExamDrishtiCheckout';
+import DynamicInstitutePage from './pages/institutes/DynamicInstitutePage';
+import DynamicInstituteAllCourses from './pages/institutes/DynamicInstituteAllCourses';
+import DynamicInstituteCheckout from './pages/institutes/DynamicInstituteCheckout';
 
 const PageSection = ({ children }) => (
   <div className="pt-24">
@@ -53,6 +58,7 @@ export default function App() {
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
+  const isInstituteDashboardRoute = location.pathname.startsWith('/institute-dashboard');
   const isInstituteDetailRoute = location.pathname.startsWith('/institutes/') && location.pathname !== '/institutes';
   const [activeTab, setActiveTab] = useState('home');
   // Keep tab context in sync on non-home routes based on pathname
@@ -100,10 +106,14 @@ export default function App() {
   };
 
 
-  if (isDashboardRoute) {
+  if (isDashboardRoute || isInstituteDashboardRoute || location.pathname === '/login') {
     return (
       <div className="bg-gray-50 min-h-screen">
-        <DashboardApp />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard/*" element={<DashboardApp />} />
+          <Route path="/institute-dashboard/*" element={<InstituteDashboardApp />} />
+        </Routes>
       </div>
     );
   }
@@ -113,6 +123,7 @@ export default function App() {
   if (isInstituteDetailRoute) {
     content = (
       <Routes>
+        {/* Legacy static routes - Must come before dynamic route */}
         <Route path="/institutes/destination-ias" element={<DestinationIASPage />} />
         <Route path="/institutes/destination-ias/courses" element={<DestinationIASAllCourses />} />
         <Route path="/institutes/destination-ias/checkout/:courseId" element={<DestinationIASCheckout />} />
@@ -125,6 +136,10 @@ export default function App() {
         <Route path="/institutes/examdrishti" element={<ExamDrishtiPage />} />
         <Route path="/institutes/examdrishti/courses" element={<ExamDrishtiAllCourses />} />
         <Route path="/institutes/examdrishti/checkout/:courseId" element={<ExamDrishtiCheckout />} />
+        {/* Dynamic Institute Routes - Catches all other institute IDs */}
+        <Route path="/institutes/:instituteId" element={<DynamicInstitutePage />} />
+        <Route path="/institutes/:instituteId/courses" element={<DynamicInstituteAllCourses />} />
+        <Route path="/institutes/:instituteId/checkout/:courseId" element={<DynamicInstituteCheckout />} />
       </Routes>
     );
   } else if (isHome) {
