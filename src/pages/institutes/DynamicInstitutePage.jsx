@@ -92,7 +92,7 @@ const DynamicInstitutePage = () => {
         <DynamicInstituteTestimonials institute={institute} content={content} />
         <DynamicInstituteFAQ institute={institute} content={content} />
       </main>
-      <DynamicInstituteFooter institute={institute} />
+      <DynamicInstituteFooter institute={institute} content={content} />
     </div>
   );
 };

@@ -44,7 +44,7 @@ const DynamicInstituteFAQ = ({ institute, content }) => {
                 className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition"
               >
                 <span className="font-semibold text-gray-900">{faq.question}</span>
-                <span className={`text-2xl transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
+                <span className={`text-2xl text-primary transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
                   ▼
                 </span>
               </button>

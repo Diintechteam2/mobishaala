@@ -9,6 +9,7 @@ import JourneyEditor from './pages/JourneyEditor';
 import TestimonialsEditor from './pages/TestimonialsEditor';
 import FAQEditor from './pages/FAQEditor';
 import UsersCenter from './pages/UsersCenter';
+import FooterEditor from './pages/FooterEditor';
 
 const InstituteDashboardApp = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const InstituteDashboardApp = () => {
         <Route path="journey" element={<JourneyEditor />} />
         <Route path="testimonials" element={<TestimonialsEditor />} />
         <Route path="faq" element={<FAQEditor />} />
+        <Route path="footer" element={<FooterEditor />} />
         <Route path="users" element={<UsersCenter />} />
       </Route>
     </Routes>

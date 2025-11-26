@@ -41,6 +41,7 @@ const InstituteDashboardLayout = () => {
     { path: 'journey', label: 'Journey/Platform', icon: '🛤️' },
     { path: 'testimonials', label: 'Testimonials', icon: '💬' },
     { path: 'faq', label: 'FAQ', icon: '❓' },
+    { path: 'footer', label: 'Footer', icon: '🦶' },
     { path: 'users', label: 'Users & Leads', icon: '👥' },
   ];
 

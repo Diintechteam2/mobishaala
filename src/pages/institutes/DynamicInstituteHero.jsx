@@ -102,7 +102,7 @@ const DynamicInstituteHero = ({ institute, content }) => {
 
   return (
     <section className="pt-32 pb-16 bg-gradient-to-b from-[#f0f5ff] via-white to-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      <div className="absolute inset-0 opacity-60" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-10 items-start">
           <div>

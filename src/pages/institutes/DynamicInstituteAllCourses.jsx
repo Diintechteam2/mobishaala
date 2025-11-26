@@ -211,7 +211,7 @@ const DynamicInstituteAllCourses = () => {
             </div>
             <div className="relative">
               <button
-                className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2 hover:border-primary transition bg-white"
+                className="px-4 py-2 border text-primary border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2 hover:border-primary transition bg-white"
                 onClick={() => setLanguageMenuOpen((prev) => !prev)}
               >
                 {activeLanguage}

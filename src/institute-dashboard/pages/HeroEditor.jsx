@@ -338,7 +338,7 @@ const HeroPreview = ({ data }) => {
   return (
     <section className="pt-12 pb-6 bg-gradient-to-b from-[#f0f5ff] via-white to-white relative overflow-hidden rounded-2xl border border-gray-100">
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-40"
         style={{
           backgroundImage: `url(${data.backgroundImage})`,
           backgroundSize: 'cover',
