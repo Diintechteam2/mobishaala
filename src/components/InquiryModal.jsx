@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = 'https://mobishaala-backend-zcxm.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://mobishaala-backend-zcxm.onrender.com';
 
 const initialForm = {
   name: '',

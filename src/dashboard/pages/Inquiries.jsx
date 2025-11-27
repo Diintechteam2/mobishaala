@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-const API_BASE = ':http//localhost:5000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://mobishaala-backend-zcxm.onrender.com';
 const statusOptions = [
   { value: 'new', label: 'New' },
   { value: 'contacted', label: 'Contacted' },
@@ -45,6 +45,12 @@ const Inquiries = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const raw = await response.text();
+        console.error('Unexpected inquiries response:', raw);
+        throw new Error('Unexpected response from server. Please log in again or check the backend.');
+      }
 
       const data = await response.json();
       if (!response.ok || !data.success) {
@@ -93,6 +99,12 @@ const Inquiries = () => {
         },
         body: JSON.stringify({ status: nextStatus }),
       });
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const raw = await response.text();
+        console.error('Unexpected update response:', raw);
+        throw new Error('Unexpected response from server while updating status.');
+      }
 
       const data = await response.json();
       if (!response.ok || !data.success) {
