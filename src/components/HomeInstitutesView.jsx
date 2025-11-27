@@ -7,10 +7,10 @@ import MediaSpotlight from './algbunke/MediaSpotlight';
 import Testimonials from './Testimonials';
 import InstitutesFAQ from './InstitutesFAQ';
 
-const HomeInstitutesView = () => {
+const HomeInstitutesView = ({ onOpenInquiry }) => {
   return (
     <div className="pt-24">
-      <Hero />
+      <Hero onOpenInquiry={onOpenInquiry} />
       <Partner />
       <OneForAll />
       <Podcast />

@@ -8,6 +8,7 @@ import Institutes from './pages/Institutes';
 import Theme from './pages/Theme';
 import Leads from './pages/Leads';
 import Settings from './pages/Settings';
+import Inquiries from './pages/Inquiries';
 
 const DashboardApp = () => (
   <Routes>
@@ -25,6 +26,7 @@ const DashboardApp = () => (
       <Route path="institutes" element={<Institutes />} />
       <Route path="theme" element={<Theme />} />
       <Route path="leads" element={<Leads />} />
+      <Route path="inquiries" element={<Inquiries />} />
       <Route path="settings" element={<Settings />} />
       <Route path="*" element={<Navigate to="overview" replace />} />
     </Route>

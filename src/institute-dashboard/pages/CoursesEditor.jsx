@@ -10,6 +10,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'GS P2I - 2026',
     language: 'Hindi',
+    mode: 'Hybrid',
     price: 21999,
     originalPrice: 70000,
     discount: 69,
@@ -23,6 +24,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'GS P2I - 2027',
     language: 'English',
+    mode: 'Online',
     price: 25999,
     originalPrice: 78000,
     discount: 63,
@@ -36,6 +38,7 @@ const defaultCourses = [
     category: 'UPSC Optional',
     phase: 'Optional - PSIR',
     language: 'English',
+    mode: 'Online',
     price: 18999,
     originalPrice: 32000,
     discount: 41,
@@ -49,6 +52,7 @@ const defaultCourses = [
     category: 'State PCS',
     phase: 'GS P2I - State',
     language: 'Hindi',
+    mode: 'Offline',
     price: 32999,
     originalPrice: 58000,
     discount: 45,
@@ -59,6 +63,9 @@ const defaultCourses = [
 
 const defaultTitle = 'Explore our most Popular Courses';
 const defaultSubtitle = 'Study Online';
+
+const languageOptions = ['Hindi', 'English', 'Bilingual'];
+const modeOptions = ['Online', 'Offline', 'Hybrid', 'Books'];
 
 // Helper to format title with last 2 words highlighted
 const formatTitle = (title) => {
@@ -100,6 +107,7 @@ const CoursesEditor = () => {
     category: '',
     phase: '',
     language: 'Hindi',
+    mode: 'Online',
     price: 0,
     originalPrice: 0,
     discount: 0,
@@ -138,7 +146,9 @@ const CoursesEditor = () => {
           price: Number(c.price) || 0,
           originalPrice: Number(c.originalPrice) || 0,
           discount: Number(c.discount) || 0,
-          enabled: c.enabled !== false
+          enabled: c.enabled !== false,
+          mode: c.mode || 'Online',
+          language: c.language === 'All Languages' ? 'Bilingual' : (c.language || 'Hindi')
         }));
         console.log('📋 Processed courses:', courses);
         setContent({
@@ -168,6 +178,7 @@ const CoursesEditor = () => {
       category: '',
       phase: '',
       language: 'Hindi',
+      mode: 'Online',
       price: 0,
       originalPrice: 0,
       discount: 0,
@@ -559,9 +570,21 @@ const CoursesEditor = () => {
                   onChange={(e) => setNewCourse(prev => ({ ...prev, language: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-indigo-500 outline-none"
                 >
-                  <option value="Hindi">Hindi</option>
-                  <option value="English">English</option>
-                  <option value="All Languages">All Languages</option>
+                  {languageOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Mode of Course</label>
+                <select
+                  value={newCourse.mode}
+                  onChange={(e) => setNewCourse(prev => ({ ...prev, mode: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                  {modeOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -698,9 +721,21 @@ const CoursesEditor = () => {
                       onChange={(e) => updateCourse(course.id, 'language', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-indigo-500 outline-none"
                     >
-                      <option value="Hindi">Hindi</option>
-                      <option value="English">English</option>
-                      <option value="All Languages">All Languages</option>
+                      {languageOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Mode of Course</label>
+                    <select
+                      value={course.mode || 'Online'}
+                      onChange={(e) => updateCourse(course.id, 'mode', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                    >
+                      {modeOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
                     </select>
                   </div>
                   <div>

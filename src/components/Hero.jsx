@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from "framer-motion"
 
 const Highlight = ({ children }) => (
@@ -35,18 +35,20 @@ const OfferCard = ({ delay }) => (
     transition={{ delay, duration: 0.6 }}
     whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
   >
-    <div className="text-xs text-gray-600 font-medium mb-2">Your Favorite Course</div>
+    <div className="text-xs text-gray-600 font-medium mb-2">Realtime Enrollments</div>
     <div className="text-gray-900 text-sm font-semibold">
-      NOW AT <span className="text-red-500 font-bold text-base">50% OFF</span>
+      <span className="text-primary font-bold text-base">+48%</span> conversion lift
     </div>
-    <div className="text-xs text-gray-500 mt-3 font-medium">Your redeemable coupon code:</div>
-    <div className="text-xs font-mono font-bold bg-gray-100 inline-block px-3 py-2 rounded mt-2 text-gray-900">
-      FLASHMEGA50
-    </div>
+    <div className="text-xs text-gray-500 mt-3 font-medium">Triggered nudges & call orchestration</div>
   </motion.div>
 )
 
-const Hero = () => {
+const Hero = ({ onOpenInquiry }) => {
+  const [isCallPopupOpen, setIsCallPopupOpen] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -67,24 +69,53 @@ const Hero = () => {
     },
   }
 
+  const featureHighlights = [
+    "Orchestrate your institute's sales, marketing & software with AI-powered Mobishaala.",
+    'Agentic AI End - to - End Support',
+    // 'Track applications, nudges, and payments from one agentic command center.'
+  ]
+
+  const handleCallRequest = (event) => {
+    event.preventDefault()
+    if (!phoneNumber.trim()) {
+      setFeedbackMessage('Please enter a valid mobile number.')
+      return
+    }
+    setIsSubmitting(true)
+    setFeedbackMessage('')
+
+    // Placeholder async hook – integrate API later.
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setFeedbackMessage('Thanks! Our team will reach out shortly.')
+      setPhoneNumber('')
+    }, 800)
+  }
+
+  const closePopup = () => {
+    setIsCallPopupOpen(false)
+    setPhoneNumber('')
+    setFeedbackMessage('')
+    setIsSubmitting(false)
+  }
+
   return (
-    <section id="home" className="pt-[150px] md:pt-32 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
+    <section id="home" className="pt-[60px] md:pt-16 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: Headline and CTAs */}
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
             {/* Main Headline */}
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 leading-tight tracking-tight"
+              className="text-3xl sm:text-5xl md:text-4xl font-black text-gray-900 leading-tight tracking-tight"
               variants={itemVariants}
             >
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <Highlight>WhatsApp</Highlight>
-                <span>&</span>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <Highlight>India's first</Highlight>
+                <span>AI-Enabled</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Highlight>Calling</Highlight>
-                <span>Platform</span>
+                <Highlight>Education Network</Highlight>
               </div>
             </motion.h1>
 
@@ -93,29 +124,43 @@ const Hero = () => {
               className="text-gray-600 text-lg md:text-xl mt-6 max-w-lg leading-relaxed"
               variants={itemVariants}
             >
-              Do Campaigns, Sales Calls, Chatbots, Support Helplines, Live Chats, and more on a single platform.
+              Mobishaala stands as a bridge between traditional teaching excellence and futuristic AI intelligence — enabling every educator to scale, every student to succeed, and every institute to thrive in the new digital era.
             </motion.p>
 
+            <motion.ul className="mt-6 space-y-3 text-gray-600 text-base" variants={itemVariants}>
+              {featureHighlights.map((point) => (
+                <li key={point} className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </motion.ul>
+
             {/* CTA Buttons */}
-            <motion.div className="mt-8 flex items-center gap-4" variants={itemVariants}>
+            <motion.div className="mt-8 flex flex-wrap items-center gap-4" variants={itemVariants}>
               <motion.button
                 className="bg-primary text-white px-8 py-3 rounded-lg font-bold text-lg hover:bg-primary-dark transition-colors shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                type="button"
+                onClick={() => onOpenInquiry?.()}
               >
-                Start For Free
+                Book A Demo
               </motion.button>
-              <motion.div
-                className="h-14 w-14 rounded-full bg-white shadow-lg flex items-center justify-center cursor-pointer hover:shadow-xl transition-shadow"
-                whileHover={{ scale: 1.1 }}
+              <motion.button
+                type="button"
+                className="inline-flex items-center gap-2 border border-primary text-primary px-6 py-3 rounded-lg font-bold text-lg bg-white shadow-lg hover:bg-primary hover:text-white transition-colors"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setIsCallPopupOpen(true)}
+                aria-label="Get a call back"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  className="h-7 w-7 text-primary"
+                  className="h-6 w-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -124,7 +169,8 @@ const Hero = () => {
                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45c.84.27 1.71.45 2.61.57A2 2 0 0 1 22 16.92z"
                   />
                 </svg>
-              </motion.div>
+                <span>Get a Call</span>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -142,23 +188,23 @@ const Hero = () => {
               transition={{ duration: 0.3 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=700&fit=crop"
-                alt="Professional woman using platform"
+                src="/mobishaalaheroimage-1.jpg"
+                alt="Growth team using Mobishaala"
                 className="w-full h-full object-cover"
               />
               {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
             </motion.div>
 
             {/* Stat Card - Top Right */}
-            <div className="absolute -top-4 -right-4 md:top-8 md:right-0 w-56 md:w-64 z-10">
-              <StatCard title="Calls this week" value="330" delay={0.5} />
-            </div>
+            {/* <div className="absolute -top-4 -right-4 md:top-8 md:right-0 w-56 md:w-64 z-10">
+              <StatCard title="Calls orchestrated" value="330 / week" sub="AI-routed + human follow-ups" delay={0.5} />
+            </div> */}
 
             {/* Offer Card - Bottom Left */}
-            <div className="absolute -bottom-6 -left-4 md:bottom-12 md:left-0 w-72 md:w-80 z-10">
+            {/* <div className="absolute -bottom-6 -left-4 md:bottom-12 md:left-0 w-72 md:w-80 z-10">
               <OfferCard delay={0.7} />
-            </div>
+            </div> */}
 
             {/* Decorative Elements */}
             <motion.div
@@ -174,6 +220,61 @@ const Hero = () => {
           </motion.div>
         </div>
       </div>
+
+      {isCallPopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm uppercase tracking-wide text-primary font-semibold">Talk To Us</p>
+                <h3 className="text-2xl font-bold text-gray-900">Request a Call Back</h3>
+              </div>
+              <button
+                className="text-gray-400 hover:text-gray-600"
+                onClick={closePopup}
+                aria-label="Close request form"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-gray-600 text-sm mb-6">
+              Drop your mobile number and our counselor desk will reach out within minutes.
+            </p>
+            <form className="space-y-4" onSubmit={handleCallRequest}>
+              <label className="block text-sm font-medium text-gray-700">
+                Mobile Number
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  maxLength={15}
+                  placeholder="Enter your mobile number"
+                  className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 text-base focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </label>
+              {feedbackMessage && (
+                <p className={`text-sm ${feedbackMessage.startsWith('Thanks') ? 'text-green-600' : 'text-red-600'}`}>
+                  {feedbackMessage}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-primary py-3 text-white font-semibold hover:bg-primary-dark transition-colors disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? 'Connecting…' : 'Get a Call'}
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </section>
   )
 }

@@ -3,24 +3,49 @@ import { examDrishtiCourses } from './coursesData';
 import { Link, useNavigate } from 'react-router-dom';
 
 const categories = ['UPSC', 'State PCS', 'SSC/Banking', 'Interview', 'Add-on'];
-const languages = ['All Languages', 'Hindi', 'English'];
+const baseLanguageOptions = ['Hindi', 'English', 'Bilingual'];
+const baseModeOptions = ['Online', 'Offline', 'Hybrid', 'Books'];
 
 const ExamDrishtiCourses = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('UPSC');
   const [activeLanguage, setActiveLanguage] = useState('All Languages');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [activeMode, setActiveMode] = useState('All Modes');
+  const [modeMenuOpen, setModeMenuOpen] = useState(false);
+
+  const languages = useMemo(() => {
+    const set = new Set(baseLanguageOptions);
+    examDrishtiCourses.forEach((course) => {
+      const normalizedLanguage = course.language === 'All Languages' ? 'Bilingual' : (course.language || 'Hindi');
+      set.add(normalizedLanguage);
+    });
+    return ['All Languages', ...Array.from(set)];
+  }, []);
+
+  const modeOptions = useMemo(() => {
+    const set = new Set(baseModeOptions);
+    examDrishtiCourses.forEach((course) => set.add(course.mode || 'Online'));
+    return ['All Modes', ...Array.from(set)];
+  }, []);
 
   const filtered = useMemo(() => {
     return examDrishtiCourses.filter((course) => {
+      const normalizedLanguage = course.language === 'All Languages' ? 'Bilingual' : (course.language || 'Hindi');
+      const courseMode = course.mode || 'Online';
       const categoryMatch = course.category === activeCategory;
-      const languageMatch = activeLanguage === 'All Languages' || course.language === activeLanguage;
-      return categoryMatch && languageMatch;
+      const languageMatch = activeLanguage === 'All Languages' || normalizedLanguage === activeLanguage;
+      const modeMatch = activeMode === 'All Modes' || courseMode === activeMode;
+      return categoryMatch && languageMatch && modeMatch;
     });
-  }, [activeCategory, activeLanguage]);
+  }, [activeCategory, activeLanguage, activeMode]);
 
   const handleBuy = (courseId) => {
     navigate(`/institutes/examdrishti/checkout/${courseId}`);
+  };
+
+  const handleViewDetails = (courseId) => {
+    navigate(`/institutes/examdrishti/course/${courseId}`);
   };
 
   return (
@@ -31,29 +56,55 @@ const ExamDrishtiCourses = () => {
             <p className="text-xs font-semibold tracking-[0.3em] uppercase text-primary">Subscription plans</p>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900">Pick the stack that fits your journey</h2>
           </div>
-          <div className="relative">
-            <button
-              className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2"
-              onClick={() => setLanguageMenuOpen((prev) => !prev)}
-            >
-              {activeLanguage} <span>▾</span>
-            </button>
-            {languageMenuOpen && (
-              <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10">
-                {languages.map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => {
-                      setActiveLanguage(lang);
-                      setLanguageMenuOpen(false);
-                    }}
-                    className={`block w-full text-left px-4 py-2 text-sm ${activeLanguage === lang ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'}`}
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <button
+                className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2"
+                onClick={() => setLanguageMenuOpen((prev) => !prev)}
+              >
+                {activeLanguage} <span>▾</span>
+              </button>
+              {languageMenuOpen && (
+                <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => {
+                        setActiveLanguage(lang);
+                        setLanguageMenuOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm ${activeLanguage === lang ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'}`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="relative">
+              <button
+                className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2"
+                onClick={() => setModeMenuOpen((prev) => !prev)}
+              >
+                {activeMode} <span>▾</span>
+              </button>
+              {modeMenuOpen && (
+                <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10">
+                  {modeOptions.map((mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => {
+                        setActiveMode(mode);
+                        setModeMenuOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm ${activeMode === mode ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'}`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -84,16 +135,32 @@ const ExamDrishtiCourses = () => {
                 <p className="text-xs uppercase text-gray-500 font-semibold">{course.phase}</p>
                 <h3 className="text-base font-bold text-gray-900">{course.title}</h3>
                 <p className="text-sm text-gray-600">{course.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">
+                    {course.language === 'All Languages' ? 'Bilingual' : course.language}
+                  </span>
+                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">
+                    {course.mode || 'Online'}
+                  </span>
+                </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xl font-black text-gray-900">₹{course.price.toLocaleString('en-IN')}</span>
                   <span className="text-sm text-gray-400 line-through">₹{course.originalPrice.toLocaleString('en-IN')}</span>
                 </div>
-                <button
-                  onClick={() => handleBuy(course.id)}
-                  className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
-                >
-                  BUY NOW
-                </button>
+                <div className="grid grid-cols-1 gap-2">
+                  <button
+                    onClick={() => handleViewDetails(course.id)}
+                    className="border border-gray-200 text-gray-700 font-semibold py-2.5 rounded-xl hover:border-primary hover:text-primary transition"
+                  >
+                    VIEW DETAILS
+                  </button>
+                  <button
+                    onClick={() => handleBuy(course.id)}
+                    className="border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
+                  >
+                    BUY NOW
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -7,6 +7,7 @@ const navItems = [
   { to: '/dashboard/institutes', label: 'Institutes', icon: '🏫' },
   { to: '/dashboard/theme', label: 'Theme', icon: '🎨' },
   { to: '/dashboard/leads', label: 'Leads', icon: '📞' },
+  { to: '/dashboard/inquiries', label: 'Inquiries', icon: '🗂️' },
   { to: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
 ];
 

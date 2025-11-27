@@ -19,11 +19,11 @@ const TabNavigation = ({ activeTab, onTabChange, onLogoClick, isHomeActive = fal
             }`}
           >
             <img
-              src="/moboshaalanewlogo.png"
+              src="/mobishaala.com_logo.png"
               alt="Mobishaala"
               className="h-8 w-auto object-contain"
             />
-            <span className="text-sm font-semibold">Home</span>
+            {/* <span className="text-sm font-semibold">Home</span> */}
             {isHomeActive && (
               <motion.div
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"

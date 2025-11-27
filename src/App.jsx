@@ -11,6 +11,7 @@ import DashboardApp from './dashboard/DashboardApp';
 import InstituteDashboardApp from './institute-dashboard/InstituteDashboardApp';
 import Login from './dashboard/pages/Login';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import InquiryModal from './components/InquiryModal';
 
 // Page placeholders
 import Products from './menu/Products';
@@ -46,6 +47,7 @@ import ExamDrishtiCheckout from './pages/institutes/examDrishti/ExamDrishtiCheck
 import DynamicInstitutePage from './pages/institutes/DynamicInstitutePage';
 import DynamicInstituteAllCourses from './pages/institutes/DynamicInstituteAllCourses';
 import DynamicInstituteCheckout from './pages/institutes/DynamicInstituteCheckout';
+import DynamicCourseDetails from './pages/institutes/DynamicCourseDetails';
 
 const PageSection = ({ children }) => (
   <div className="pt-24">
@@ -61,6 +63,7 @@ export default function App() {
   const isInstituteDashboardRoute = location.pathname.startsWith('/institute-dashboard');
   const isInstituteDetailRoute = location.pathname.startsWith('/institutes/') && location.pathname !== '/institutes';
   const [activeTab, setActiveTab] = useState('home');
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   // Keep tab context in sync on non-home routes based on pathname
   useEffect(() => {
     if (isDashboardRoute) {
@@ -106,6 +109,9 @@ export default function App() {
   };
 
 
+  const openInquiryModal = () => setIsInquiryModalOpen(true);
+  const closeInquiryModal = () => setIsInquiryModalOpen(false);
+
   if (isDashboardRoute || isInstituteDashboardRoute || location.pathname === '/login') {
     return (
       <div className="bg-gray-50 min-h-screen">
@@ -139,6 +145,7 @@ export default function App() {
         {/* Dynamic Institute Routes - Catches all other institute IDs */}
         <Route path="/institutes/:instituteId" element={<DynamicInstitutePage />} />
         <Route path="/institutes/:instituteId/courses" element={<DynamicInstituteAllCourses />} />
+        <Route path="/institutes/:instituteId/course/:courseId" element={<DynamicCourseDetails />} />
         <Route path="/institutes/:instituteId/checkout/:courseId" element={<DynamicInstituteCheckout />} />
       </Routes>
     );
@@ -151,8 +158,8 @@ export default function App() {
           onLogoClick={() => handleTabChange('home')}
           isHomeActive={activeTab === 'home'}
         />
-        <Navbar activeTab={activeTab} />
-        <HomeInstitutesView />
+        <Navbar activeTab={activeTab} onOpenInquiry={openInquiryModal} />
+        <HomeInstitutesView onOpenInquiry={openInquiryModal} />
       </>
     );
   } else {
@@ -164,7 +171,7 @@ export default function App() {
           onLogoClick={() => handleTabChange('home')}
           isHomeActive={activeTab === 'home'}
         />
-        <Navbar activeTab={activeTab} />
+        <Navbar activeTab={activeTab} onOpenInquiry={openInquiryModal} />
         <Routes>
           {/* Footer Links */}
           <Route path="/privacy-policy" element={<PageSection><PrivacyPolicy /></PageSection>} />
@@ -210,6 +217,7 @@ export default function App() {
   return (
     <div className="App overflow-x-hidden">
       {content}
+      <InquiryModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal} />
       {!isInstituteDetailRoute && <Footer />}
     </div>
   );

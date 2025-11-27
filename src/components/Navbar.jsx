@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
 
-const Navbar = ({ activeTab = 'institutes' }) => {
+const Navbar = ({ activeTab = 'institutes', onOpenInquiry }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isElevated, setIsElevated] = useState(false);
   const [openDesktopMenuIndex, setOpenDesktopMenuIndex] = useState(null);
@@ -38,9 +38,9 @@ const Navbar = ({ activeTab = 'institutes' }) => {
   }, [isMobileMenuOpen]);
 
   const menu = activeTab === 'students' ? [
-    { name: 'Home', href: '/students' },
+    // { name: 'Home', href: '/students' },
     {
-      name: 'Products', href: '/students/products', children: [
+      name: 'Services', href: '/students/products', children: [
         { name: 'Online Courses', href: '/students/courses' },
         { name: 'Study Materials', href: '/students/materials' },
         { name: 'Practice Tests', href: '/students/tests' },
@@ -63,7 +63,7 @@ const Navbar = ({ activeTab = 'institutes' }) => {
       ]
     },
   ] : activeTab === 'publications' ? [
-    { name: 'Home', href: '/publications' },
+    // { name: 'Home', href: '/publications' },
     {
       name: 'Research', href: '/publications/research', children: [
         { name: 'Research Papers', href: '/publications/papers' },
@@ -88,12 +88,13 @@ const Navbar = ({ activeTab = 'institutes' }) => {
       ]
     },
   ] : [
-    { name: 'Home', href: '/' },
+    // { name: 'Home', href: '/' },
     {
-      name: 'Products', href: '/products', children: [
-        { name: 'For Institutes', href: '/institutes' },
-        { name: 'For Individual Teachers', href: '/teachers' },
-        { name: 'For Coaching Aggregators', href: '/aggregators' },
+      name: 'Services', href: '/products', children: [
+        { name: 'Software', href: '/institutes' },
+        { name: 'Sales', href: '/teachers' },
+        { name: 'Marketing', href: '/aggregators' },
+        { name: 'Support', href: '/aggregators' },
       ]
     },
     { name: 'Partners', href: '/partners' },
@@ -172,8 +173,20 @@ const Navbar = ({ activeTab = 'institutes' }) => {
                   onMouseLeave={() => item.children && setOpenDesktopMenuIndex((prev) => (prev === idx ? null : prev))}
                 >
                   <div className="flex items-center">
-                    <Link to={item.href} className="text-gray-700 hover:text-black font-medium px-1 py-2 inline-block">
+                    <Link
+                      to={item.href}
+                      className={`relative text-gray-700 hover:text-black font-medium px-1 py-2 inline-block transition-colors ${
+                        openDesktopMenuIndex === idx ? 'text-primary' : ''
+                      }`}
+                    >
                       {item.name}
+                      {item.children && (
+                        <span
+                          className={`absolute left-0 right-0 bottom-0 h-0.5 bg-primary transition-opacity duration-200 ${
+                            openDesktopMenuIndex === idx ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'
+                          }`}
+                        />
+                      )}
                     </Link>
                     {item.children && (
                       <button
@@ -188,12 +201,22 @@ const Navbar = ({ activeTab = 'institutes' }) => {
                     )}
                   </div>
                   {item.children && (
-                    <div className={`absolute left-0 mt-2 ${openDesktopMenuIndex === idx ? 'block' : 'hidden group-hover:block'} min-w-[240px] bg-white border border-gray-200 rounded-lg shadow-lg py-2`} onMouseEnter={() => setOpenDesktopMenuIndex(idx)}>
-                      {item.children.map((child) => (
-                        <Link key={child.name} to={child.href} className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
-                          {child.name}
-                        </Link>
-                      ))}
+                    <div
+                      className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-200 ${
+                        openDesktopMenuIndex === idx ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'
+                      }`}
+                      onMouseEnter={() => setOpenDesktopMenuIndex(idx)}
+                    >
+                      <div className="relative min-w-[260px] bg-white border border-gray-200 rounded-2xl shadow-xl py-3">
+                        <div className="absolute left-1/2 -top-2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white border border-gray-200 border-b-0 border-r-0" />
+                        <div className="space-y-1">
+                          {item.children.map((child) => (
+                            <Link key={child.name} to={child.href} className="block px-5 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+                              {child.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -202,12 +225,13 @@ const Navbar = ({ activeTab = 'institutes' }) => {
 
             {/* CTAs */}
             <div className="hidden lg:flex items-center gap-3">
-              <a
-                href="#start"
+              <button
+                type="button"
+                onClick={() => onOpenInquiry?.()}
                 className="rounded-full bg-primary text-white px-4 py-2 text-sm font-semibold hover:bg-primary-dark transition-colors"
               >
                 TRY FOR FREE
-              </a>
+              </button>
             </div>
 
             {/* Mobile/Tablet button */}
@@ -261,13 +285,16 @@ const Navbar = ({ activeTab = 'institutes' }) => {
                     )}
                   </div>
                 ))}
-                <a
-                  href="#start"
+                <button
+                  type="button"
                   className="mt-2 inline-block text-center rounded-full bg-primary text-white px-5 py-2 font-semibold"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenInquiry?.();
+                  }}
                 >
                   TRY FOR FREE
-                </a>
+                </button>
               </div>
             </div>
           )}

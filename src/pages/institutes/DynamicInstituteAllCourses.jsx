@@ -12,6 +12,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'GS P2I - 2026',
     language: 'Hindi',
+    mode: 'Hybrid',
     price: 21999,
     originalPrice: 70000,
     discount: 69,
@@ -24,6 +25,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'GS P2I - 2027',
     language: 'English',
+    mode: 'Online',
     price: 25999,
     originalPrice: 78000,
     discount: 63,
@@ -36,6 +38,7 @@ const defaultCourses = [
     category: 'UPSC Optional',
     phase: 'Optional - PSIR',
     language: 'English',
+    mode: 'Online',
     price: 18999,
     originalPrice: 32000,
     discount: 41,
@@ -48,6 +51,7 @@ const defaultCourses = [
     category: 'State PCS',
     phase: 'GS P2I - State',
     language: 'Hindi',
+    mode: 'Offline',
     price: 32999,
     originalPrice: 58000,
     discount: 45,
@@ -60,6 +64,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'P2I - Advance',
     language: 'Hindi',
+    mode: 'Hybrid',
     price: 9999,
     originalPrice: 15999,
     discount: 38,
@@ -72,6 +77,7 @@ const defaultCourses = [
     category: 'UPSC',
     phase: 'Mains - 2025',
     language: 'English',
+    mode: 'Online',
     price: 12999,
     originalPrice: 24000,
     discount: 46,
@@ -106,8 +112,7 @@ const DynamicInstituteAllCourses = () => {
   const [activePhase, setActivePhase] = useState('All');
   const [activeLanguage, setActiveLanguage] = useState('All Languages');
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
-
-  const languages = ['All Languages', 'Hindi', 'English'];
+  const [activeMode, setActiveMode] = useState('All Modes');
 
   useEffect(() => {
     fetchData();
@@ -137,7 +142,9 @@ const DynamicInstituteAllCourses = () => {
               ...c,
               price: Number(c.price) || 0,
               originalPrice: Number(c.originalPrice) || 0,
-              discount: Number(c.discount) || 0
+              discount: Number(c.discount) || 0,
+              mode: c.mode || 'Online',
+              language: c.language === 'All Languages' ? 'Bilingual' : (c.language || 'Hindi')
             }));
           console.log('✅ Enabled courses:', enabledCourses);
           setCourses(enabledCourses.length > 0 ? enabledCourses : defaultCourses);
@@ -155,6 +162,23 @@ const DynamicInstituteAllCourses = () => {
     return ['All', ...cats];
   }, [courses]);
 
+  const languages = useMemo(() => {
+    const set = new Set(['Hindi', 'English', 'Bilingual']);
+    courses.forEach((course) => {
+      const normalizedLanguage = course.language === 'All Languages' ? 'Bilingual' : (course.language || 'Hindi');
+      set.add(normalizedLanguage);
+    });
+    return ['All Languages', ...Array.from(set)];
+  }, [courses]);
+
+  const modeOptions = useMemo(() => {
+    const set = new Set(['Online', 'Offline', 'Hybrid', 'Books']);
+    courses.forEach((course) => {
+      set.add(course.mode || 'Online');
+    });
+    return ['All Modes', ...Array.from(set)];
+  }, [courses]);
+
   const phases = useMemo(() => {
     const coursesToFilter = activeCategory === 'All' 
       ? courses 
@@ -165,15 +189,22 @@ const DynamicInstituteAllCourses = () => {
 
   const filteredCourses = useMemo(() => {
     return courses.filter((c) => {
+      const courseLanguage = c.language === 'All Languages' ? 'Bilingual' : (c.language || 'Hindi');
+      const courseMode = c.mode || 'Online';
       const categoryMatch = activeCategory === 'All' || c.category === activeCategory;
       const phaseMatch = activePhase === 'All' || c.phase === activePhase;
-      const languageMatch = activeLanguage === 'All Languages' || c.language === activeLanguage;
-      return categoryMatch && phaseMatch && languageMatch;
+      const languageMatch = activeLanguage === 'All Languages' || courseLanguage === activeLanguage;
+      const modeMatch = activeMode === 'All Modes' || courseMode === activeMode;
+      return categoryMatch && phaseMatch && languageMatch && modeMatch;
     });
-  }, [courses, activeCategory, activePhase, activeLanguage]);
+  }, [courses, activeCategory, activePhase, activeLanguage, activeMode]);
 
   const handleBuy = (courseId) => {
     navigate(`/institutes/${instituteId}/checkout/${courseId}`);
+  };
+
+  const handleViewDetails = (courseId) => {
+    navigate(`/institutes/${instituteId}/course/${courseId}`);
   };
 
   if (loading) {
@@ -209,32 +240,61 @@ const DynamicInstituteAllCourses = () => {
               </h1>
               <p className="text-gray-600 mt-2">{filteredCourses.length} courses available</p>
             </div>
-            <div className="relative">
-              <button
-                className="px-4 py-2 border text-primary border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2 hover:border-primary transition bg-white"
-                onClick={() => setLanguageMenuOpen((prev) => !prev)}
-              >
-                {activeLanguage}
-                <span>▾</span>
-              </button>
-              {languageMenuOpen && (
-                <div className="absolute mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10 right-0">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => {
-                        setActiveLanguage(lang);
-                        setLanguageMenuOpen(false);
-                      }}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        activeLanguage === lang ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {lang}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <button
+                  className="px-4 py-2 border text-primary border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2 hover:border-primary transition bg-white"
+                  onClick={() => setLanguageMenuOpen((prev) => !prev)}
+                >
+                  {activeLanguage}
+                  <span>▾</span>
+                </button>
+                {languageMenuOpen && (
+                  <div className="absolute mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10 right-0">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => {
+                          setActiveLanguage(lang);
+                          setLanguageMenuOpen(false);
+                        }}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          activeLanguage === lang ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <button
+                  className="px-4 py-2 border text-primary border-gray-200 rounded-full text-sm font-semibold flex items-center gap-2 hover:border-primary transition bg-white"
+                  onClick={() => setModeMenuOpen((prev) => !prev)}
+                >
+                  {activeMode}
+                  <span>▾</span>
+                </button>
+                {modeMenuOpen && (
+                  <div className="absolute mt-2 bg-white border border-gray-200 rounded-xl shadow-lg w-44 z-10 right-0">
+                    {modeOptions.map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() => {
+                          setActiveMode(mode);
+                          setModeMenuOpen(false);
+                        }}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          activeMode === mode ? 'text-primary font-semibold' : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        {mode}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -297,6 +357,14 @@ const DynamicInstituteAllCourses = () => {
                   <p className="text-xs uppercase text-gray-500 font-semibold">{course.phase || course.category}</p>
                   <h3 className="text-base font-bold text-gray-900 line-clamp-2">{course.title}</h3>
                   <p className="text-sm text-gray-600 line-clamp-2">{course.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">
+                      {course.language}
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">
+                      {course.mode || 'Online'}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xl font-black text-gray-900">
                       ₹{Number(course.price || 0).toLocaleString('en-IN')}
@@ -307,12 +375,20 @@ const DynamicInstituteAllCourses = () => {
                       </span>
                     )}
                   </div>
-                  <button
-                    onClick={() => handleBuy(course.id)}
-                    className="w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
-                  >
-                    BUY NOW
-                  </button>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => handleViewDetails(course.id)}
+                      className="border border-gray-200 text-gray-700 font-semibold py-2.5 rounded-xl hover:border-primary hover:text-primary transition"
+                    >
+                      VIEW DETAILS
+                    </button>
+                    <button
+                      onClick={() => handleBuy(course.id)}
+                      className="border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition"
+                    >
+                      BUY NOW
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
