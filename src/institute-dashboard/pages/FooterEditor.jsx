@@ -146,7 +146,7 @@ const FooterEditor = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/institute-content/${instituteId}`,
+        `https://mobishaala-backend-zcxm.onrender.com/api/institute-content/${instituteId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -236,7 +236,7 @@ const FooterEditor = () => {
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/institute-content/${instituteId}`,
+        `https://mobishaala-backend-zcxm.onrender.com/api/institute-content/${instituteId}`,
         {
           method: 'PUT',
           headers: {
