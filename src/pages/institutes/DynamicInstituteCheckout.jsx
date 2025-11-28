@@ -201,9 +201,12 @@ const DynamicInstituteCheckout = () => {
 
     const orderId = data.data.orderId;
 
-    const handleTransactionStatus = (paytmData) => {
-      pollPaymentStatus(orderId)
-        .catch((error) => console.error('Paytm transaction status poll error:', error));
+    const handleTransactionStatus = async (paytmData) => {
+      try {
+        await pollPaymentStatus(orderId);
+      } catch (error) {
+        console.error('Paytm transaction status poll error:', error);
+      }
     };
 
     const handleNotifyMerchant = (eventName, paytmData) => {
@@ -211,6 +214,12 @@ const DynamicInstituteCheckout = () => {
       if (eventName === 'APP_CLOSED') {
         setProcessingPayment(false);
       }
+    };
+
+    const handleError = (error) => {
+      console.error('Paytm SDK error:', error);
+      setProcessingPayment(false);
+      setFormError('Unable to open Paytm. Please try again or use another payment method.');
     };
 
     const config = {
@@ -225,15 +234,30 @@ const DynamicInstituteCheckout = () => {
       handler: {
         transactionStatus: handleTransactionStatus,
         notifyMerchant: handleNotifyMerchant,
+        error: handleError,
+      },
+      merchant: {
+        eventHandler: {
+          notifyMerchant: handleNotifyMerchant,
+        },
       },
     };
 
     setProcessingPayment(true);
     try {
       await window.Paytm?.CheckoutJS?.init(config);
+
+      if (window.Paytm?.CheckoutJS?.on) {
+        window.Paytm.CheckoutJS.on('eventHandler', (eventData) => {
+          if (eventData?.eventType === 'ERROR') {
+            handleError(eventData);
+          }
+        });
+      }
+
       await window.Paytm?.CheckoutJS?.invoke();
     } catch (error) {
-      setProcessingPayment(false);
+      handleError(error);
       throw error;
     }
   };
