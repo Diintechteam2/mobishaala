@@ -43,6 +43,7 @@ const InstituteDashboardLayout = () => {
     { path: 'faq', label: 'FAQ', icon: '❓' },
     { path: 'footer', label: 'Footer', icon: '🦶' },
     { path: 'users', label: 'Users & Leads', icon: '👥' },
+    { path: 'payments', label: 'Payments', icon: '💳' },
   ];
 
   const handleBackToAdmin = () => {

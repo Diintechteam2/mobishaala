@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import DynamicInstituteNavbar from './DynamicInstituteNavbar';
 import DynamicInstituteFooter from './DynamicInstituteFooter';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://mobishaala-backend-zcxm.onrender.com';
+
 const DynamicInstituteCheckout = () => {
   const { instituteId, courseId } = useParams();
 
@@ -21,6 +23,10 @@ const DynamicInstituteCheckout = () => {
     notes: '',
     mode: 'Online'
   });
+  const [isPaytmEnabled, setIsPaytmEnabled] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [transactionStatus, setTransactionStatus] = useState('');
+  const paytmReady = isPaytmEnabled && Number(course?.price || 0) > 0;
 
   useEffect(() => {
     fetchData();
@@ -29,16 +35,17 @@ const DynamicInstituteCheckout = () => {
   const fetchData = async () => {
     try {
       // Fetch institute details
-      const instituteRes = await fetch(`https://mobishaala-backend-zcxm.onrender.com/api/institutes/public/${instituteId}`);
+      const instituteRes = await fetch(`${API_BASE}/api/institutes/public/${instituteId}`);
       if (instituteRes.ok) {
         const instituteData = await instituteRes.json();
         if (instituteData.success) {
           setInstitute(instituteData.data);
+          setIsPaytmEnabled(Boolean(instituteData.data.paymentSettings?.paytmEnabled));
         }
       }
 
       // Fetch content and course
-      const contentRes = await fetch(`https://mobishaala-backend-zcxm.onrender.com/api/institute-content/public/${instituteId}`);
+      const contentRes = await fetch(`${API_BASE}/api/institute-content/public/${instituteId}`);
       if (contentRes.ok) {
         const contentData = await contentRes.json();
         console.log('🛒 Public Checkout - Fetched data:', contentData);
@@ -83,41 +90,151 @@ const DynamicInstituteCheckout = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const submitLeadOnly = async () => {
+    const response = await fetch(`${API_BASE}/api/leads/course-purchase`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        instituteId,
+        courseId: course?.id,
+        courseTitle: course?.title,
+        price: course?.price,
+        originalPrice: course?.originalPrice,
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        city: formData.city,
+        mode: formData.mode,
+        notes: formData.notes,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Unable to submit request');
+    }
+    setSubmitted(true);
+  };
+
+  const loadPaytmScript = (mid, env) =>
+    new Promise((resolve, reject) => {
+      const existing = document.getElementById('paytm-checkout');
+      if (existing) {
+        return resolve();
+      }
+      const script = document.createElement('script');
+      const host = env === 'production' ? 'https://securegw.paytm.in' : 'https://securegw-stage.paytm.in';
+      script.id = 'paytm-checkout';
+      script.src = `${host}/merchantpgpui/checkoutjs/merchants/${mid}.js`;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+
+  const handlePaytmInitiate = async () => {
+    const response = await fetch(`${API_BASE}/api/payments/order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        instituteId,
+        courseId: course?.id,
+        courseTitle: course?.title,
+        amount: course?.price || 0,
+        student: {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          city: formData.city,
+          notes: formData.notes,
+        },
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Unable to start payment');
+    }
+
+    await loadPaytmScript(data.data.mid, data.data.environment);
+
+    const config = {
+      root: '',
+      flow: 'DEFAULT',
+      data: {
+        orderId: data.data.orderId,
+        token: data.data.txnToken,
+        tokenType: 'TXN_TOKEN',
+        amount: data.data.amount,
+      },
+      handler: {
+        transactionStatus: async () => {
+          await pollPaymentStatus(data.data.orderId);
+        },
+        notifyMerchant: async () => {
+          await pollPaymentStatus(data.data.orderId);
+        },
+      },
+    };
+
+    setProcessingPayment(true);
+    try {
+      await window.Paytm?.CheckoutJS?.init(config);
+      await window.Paytm?.CheckoutJS?.invoke();
+    } catch (error) {
+      setProcessingPayment(false);
+      throw error;
+    }
+  };
+
+  const pollPaymentStatus = async (orderId) => {
+    try {
+      const response = await fetch(`${API_BASE}/api/payments/order/${orderId}`);
+      const data = await response.json();
+    if (data.success) {
+      setTransactionStatus(data.data.status);
+      setSubmitted(true);
+    }
+    } catch (error) {
+      console.error('Payment status check error:', error);
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
     setSubmitting(true);
 
     try {
-      const response = await fetch('https://mobishaala-backend-zcxm.onrender.com/api/leads/course-purchase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          instituteId,
-          courseId: course?.id,
-          courseTitle: course?.title,
-          price: course?.price,
-          originalPrice: course?.originalPrice,
-          name: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          city: formData.city,
-          mode: formData.mode,
-          notes: formData.notes,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Unable to submit request');
+      if (!paytmReady) {
+        await submitLeadOnly();
+        if (isPaytmEnabled && Number(course?.price || 0) <= 0) {
+          setTransactionStatus('price_missing');
+        }
+        return;
       }
 
-      setSubmitted(true);
+      await handlePaytmInitiate();
     } catch (err) {
       console.error('Checkout submission error:', err);
-      setFormError(err.message || 'Something went wrong. Please try again.');
+
+      if (paytmReady) {
+        try {
+          await submitLeadOnly();
+          setTransactionStatus('gateway_unavailable');
+          return;
+        } catch (leadError) {
+          console.error('Lead fallback error:', leadError);
+          const primaryMessage = err?.message || 'Something went wrong while starting the payment.';
+          const fallbackMessage = leadError?.message || 'We could not save your details. Please try again.';
+          setFormError(`${primaryMessage} ${fallbackMessage}`);
+        }
+      } else {
+        setFormError(err?.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -146,9 +263,49 @@ const DynamicInstituteCheckout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">Thank you {formData.fullName || 'aspirant'}!</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                {transactionStatus === 'paid'
+                  ? 'Payment received 🎉'
+                  : transactionStatus === 'gateway_unavailable'
+                  ? 'We have your request'
+                  : transactionStatus === 'price_missing'
+                  ? 'Course not payment-ready'
+                  : `Thank you ${formData.fullName || 'aspirant'}!`}
+              </h1>
               <p className="text-gray-600 mb-8">
-                We will share the secure payment link for <strong>{course?.title}</strong> on your email/phone shortly.
+                {paytmReady ? (
+                  transactionStatus === 'paid' ? (
+                    <>
+                      Your payment for <strong>{course?.title}</strong> is confirmed. Our team will activate access and
+                      reach out shortly.
+                    </>
+                  ) : transactionStatus === 'pending' ? (
+                    <>
+                      Your payment session was opened but is still pending. We have logged your details and will help you
+                      complete the payment.
+                    </>
+                  ) : transactionStatus === 'gateway_unavailable' ? (
+                    <>
+                      Paytm is temporarily unavailable, but we&apos;ve safely saved your request for{' '}
+                      <strong>{course?.title}</strong>. A counselor will share a fresh payment link shortly.
+                    </>
+                  ) : transactionStatus === 'price_missing' ? (
+                    <>
+                      This course isn&apos;t configured with a payable amount yet, so we captured your request as a lead.
+                      Our team will share the right plan and payment link shortly.
+                    </>
+                  ) : (
+                    <>
+                      The payment attempt didn&apos;t complete. A counselor will contact you with the next steps or a
+                      fresh link.
+                    </>
+                  )
+                ) : (
+                  <>
+                    We will share the secure payment link for <strong>{course?.title}</strong> on your email/phone
+                    shortly.
+                  </>
+                )}
               </p>
               <Link
                 to={`/institutes/${instituteId}`}
@@ -219,6 +376,12 @@ const DynamicInstituteCheckout = () => {
               {formError && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
                   {formError}
+                </div>
+              )}
+              {isPaytmEnabled && Number(course?.price || 0) <= 0 && (
+                <div className="text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
+                  This course doesn&apos;t have a price configured yet. We will treat your submission as an inquiry until
+                  pricing is added.
                 </div>
               )}
               <div className="grid sm:grid-cols-2 gap-4">
@@ -295,10 +458,16 @@ const DynamicInstituteCheckout = () => {
               </div>
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || processingPayment}
                 className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition shadow disabled:opacity-60"
               >
-                {submitting ? 'Submitting...' : 'Continue to Secure Payment'}
+                {processingPayment
+                  ? 'Opening Paytm...'
+                  : submitting
+                  ? 'Submitting...'
+                  : paytmReady
+                  ? 'Pay with Paytm'
+                  : 'Continue to Secure Payment'}
               </button>
               <p className="text-xs text-gray-500 text-center">
                 You will receive a payment gateway link powered by Mobishaala to complete the purchase.

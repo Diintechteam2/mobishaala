@@ -27,9 +27,7 @@ const InquiryModal = ({ isOpen, onClose }) => {
   };
 
   const handleClose = () => {
-    if (isSubmitting) {
-      return;
-    }
+    if (isSubmitting) return;
     resetState();
     onClose?.();
   };
@@ -92,7 +90,7 @@ const InquiryModal = ({ isOpen, onClose }) => {
           >
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
               <div>
-                <p className="text-2xl uppercase text-primary font-semibold">Book A Demo</p>
+                <p className="text-2xl uppercase tracking-widest text-primary font-semibold">Book A Demo</p>
                 <h3 className="text-2xl font-bold text-gray-900"></h3>
               </div>
               <button
@@ -169,14 +167,14 @@ const InquiryModal = ({ isOpen, onClose }) => {
               )}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-gray-500">
-                  Our Team will reach out to you confirm your booking slot.
+                 Our Team will reach out to you confirm your booking slot.
                 </p>
                 <button
                   type="submit"
                   className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-primary-dark transition disabled:opacity-70 disabled:cursor-not-allowed"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Book Now'}
+                  {isSubmitting ? 'Booking...' : 'Book Demo'}
                 </button>
               </div>
             </form>
@@ -188,6 +186,5 @@ const InquiryModal = ({ isOpen, onClose }) => {
 };
 
 export default InquiryModal;
-
 
 
