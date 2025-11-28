@@ -118,18 +118,58 @@ const DynamicInstituteCheckout = () => {
     setSubmitted(true);
   };
 
+  const waitForPaytmSdk = () =>
+    new Promise((resolve, reject) => {
+      let attempts = 0;
+      const maxAttempts = 20;
+      const interval = 200;
+
+      const check = () => {
+        if (window.Paytm?.CheckoutJS?.init) {
+          resolve();
+          return;
+        }
+        attempts += 1;
+        if (attempts > maxAttempts) {
+          reject(new Error('Paytm SDK unavailable'));
+          return;
+        }
+        setTimeout(check, interval);
+      };
+
+      check();
+    });
+
   const loadPaytmScript = (mid, env) =>
     new Promise((resolve, reject) => {
-      const existing = document.getElementById('paytm-checkout');
-      if (existing) {
-        return resolve();
-      }
-      const script = document.createElement('script');
+      const scriptId = 'paytm-checkout';
+      const existing = document.getElementById(scriptId);
       const host = env === 'production' ? 'https://securegw.paytm.in' : 'https://securegw-stage.paytm.in';
-      script.id = 'paytm-checkout';
+
+      const ensureReady = async () => {
+        try {
+          await waitForPaytmSdk();
+          resolve();
+        } catch (sdkError) {
+          reject(sdkError);
+        }
+      };
+
+      if (existing) {
+        if (existing.dataset.mid === mid && existing.dataset.env === env) {
+          ensureReady();
+          return;
+        }
+        existing.remove();
+      }
+
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.dataset.mid = mid;
+      script.dataset.env = env;
       script.src = `${host}/merchantpgpui/checkoutjs/merchants/${mid}.js`;
-      script.onload = resolve;
-      script.onerror = reject;
+      script.onload = ensureReady;
+      script.onerror = () => reject(new Error('Unable to load Paytm SDK'));
       document.body.appendChild(script);
     });
 
