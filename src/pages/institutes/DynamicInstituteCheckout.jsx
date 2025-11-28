@@ -199,22 +199,32 @@ const DynamicInstituteCheckout = () => {
 
     await loadPaytmScript(data.data.mid, data.data.environment);
 
+    const orderId = data.data.orderId;
+
+    const handleTransactionStatus = (paytmData) => {
+      pollPaymentStatus(orderId)
+        .catch((error) => console.error('Paytm transaction status poll error:', error));
+    };
+
+    const handleNotifyMerchant = (eventName, paytmData) => {
+      console.log('Paytm notifyMerchant event:', eventName, paytmData);
+      if (eventName === 'APP_CLOSED') {
+        setProcessingPayment(false);
+      }
+    };
+
     const config = {
       root: '',
       flow: 'DEFAULT',
       data: {
-        orderId: data.data.orderId,
+        orderId,
         token: data.data.txnToken,
         tokenType: 'TXN_TOKEN',
         amount: data.data.amount,
       },
       handler: {
-        transactionStatus: async () => {
-          await pollPaymentStatus(data.data.orderId);
-        },
-        notifyMerchant: async () => {
-          await pollPaymentStatus(data.data.orderId);
-        },
+        transactionStatus: handleTransactionStatus,
+        notifyMerchant: handleNotifyMerchant,
       },
     };
 
