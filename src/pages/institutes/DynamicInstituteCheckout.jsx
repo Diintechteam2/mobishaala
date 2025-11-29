@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import DynamicInstituteNavbar from './DynamicInstituteNavbar';
 import DynamicInstituteFooter from './DynamicInstituteFooter';
 
@@ -7,6 +7,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://mobishaala-backen
 
 const DynamicInstituteCheckout = () => {
   const { instituteId, courseId } = useParams();
+  const location = useLocation();
 
   const [institute, setInstitute] = useState(null);
   const [course, setCourse] = useState(null);
@@ -28,9 +29,21 @@ const DynamicInstituteCheckout = () => {
   const [transactionStatus, setTransactionStatus] = useState('');
   const paytmReady = isPaytmEnabled && Number(course?.price || 0) > 0;
 
+  const searchParams = new URLSearchParams(location.search);
+  const urlOrderId = searchParams.get('orderId');
+
   useEffect(() => {
     fetchData();
   }, [instituteId, courseId]);
+
+  // If user lands here from Paytm redirect with orderId in URL,
+  // auto-check payment status and show the same success/failure screen.
+  useEffect(() => {
+    if (urlOrderId && !submitted) {
+      pollPaymentStatus(urlOrderId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlOrderId]);
 
   const fetchData = async () => {
     try {
@@ -212,7 +225,10 @@ const DynamicInstituteCheckout = () => {
     const handleNotifyMerchant = (eventName, paytmData) => {
       console.log('Paytm notifyMerchant event:', eventName, paytmData);
       if (eventName === 'APP_CLOSED') {
+        // User closed the Paytm UI (cross/back). Mark as cancelled if nothing else is set.
         setProcessingPayment(false);
+        setTransactionStatus((prev) => prev || 'cancelled');
+        setSubmitted(true);
       }
     };
 
@@ -266,10 +282,10 @@ const DynamicInstituteCheckout = () => {
     try {
       const response = await fetch(`${API_BASE}/api/payments/order/${orderId}`);
       const data = await response.json();
-    if (data.success) {
-      setTransactionStatus(data.data.status);
-      setSubmitted(true);
-    }
+      if (data.success) {
+        setTransactionStatus(data.data.status);
+        setSubmitted(true);
+      }
     } catch (error) {
       console.error('Payment status check error:', error);
     } finally {
@@ -312,6 +328,19 @@ const DynamicInstituteCheckout = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleCancelGateway = () => {
+    try {
+      if (window.Paytm?.CheckoutJS?.close) {
+        window.Paytm.CheckoutJS.close();
+      }
+    } catch (err) {
+      console.error('Error closing Paytm checkout:', err);
+    }
+    setProcessingPayment(false);
+    setTransactionStatus('cancelled');
+    setSubmitted(true);
   };
 
   if (loading) {
@@ -530,22 +559,33 @@ const DynamicInstituteCheckout = () => {
                   placeholder="Share your attempt, timeline or doubts"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={submitting || processingPayment}
-                className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition shadow disabled:opacity-60"
-              >
-                {processingPayment
-                  ? 'Opening Paytm...'
-                  : submitting
-                  ? 'Submitting...'
-                  : paytmReady
-                  ? 'Pay with Paytm'
-                  : 'Continue to Secure Payment'}
-              </button>
-              <p className="text-xs text-gray-500 text-center">
-                You will receive a payment gateway link powered by Mobishaala to complete the purchase.
-              </p>
+              <div className="space-y-2">
+                <button
+                  type="submit"
+                  disabled={submitting || processingPayment}
+                  className="w-full bg-primary text-white font-semibold py-3 rounded-xl hover:bg-primary-dark transition shadow disabled:opacity-60"
+                >
+                  {processingPayment
+                    ? 'Opening Paytm...'
+                    : submitting
+                    ? 'Submitting...'
+                    : paytmReady
+                    ? 'Pay with Paytm'
+                    : 'Continue to Secure Payment'}
+                </button>
+                {processingPayment && (
+                  <button
+                    type="button"
+                    onClick={handleCancelGateway}
+                    className="w-full text-xs text-gray-500 hover:text-gray-700 underline"
+                  >
+                    ✕ Cancel payment and close gateway
+                  </button>
+                )}
+                <p className="text-xs text-gray-500 text-center">
+                  You will receive a payment gateway link powered by Mobishaala to complete the purchase.
+                </p>
+              </div>
             </form>
           </div>
         </div>
