@@ -9,9 +9,9 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex">
       <SidebarNav />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar pathname={location.pathname} />
-        <main className="flex-1 overflow-y-auto px-6 py-6">
+        <main className="flex-1 overflow-y-auto px-4 py-4 lg:px-6 lg:py-6 min-w-0 max-w-full">
           <Outlet />
         </main>
       </div>

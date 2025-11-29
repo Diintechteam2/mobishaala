@@ -5,7 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Overview from './pages/Overview';
 import ContentStudio from './pages/ContentStudio';
 import Institutes from './pages/Institutes';
-import Theme from './pages/Theme';
+import Partners from './pages/Partners';
+import HeroSection from './pages/HeroSection';
 import Leads from './pages/Leads';
 import Settings from './pages/Settings';
 import Inquiries from './pages/Inquiries';
@@ -25,7 +26,8 @@ const DashboardApp = () => (
       <Route path="overview" element={<Overview />} />
       <Route path="content" element={<ContentStudio />} />
       <Route path="institutes" element={<Institutes />} />
-      <Route path="theme" element={<Theme />} />
+      <Route path="partners" element={<Partners />} />
+      <Route path="hero-section" element={<HeroSection />} />
       <Route path="leads" element={<Leads />} />
       <Route path="payments" element={<Payments />} />
       <Route path="inquiries" element={<Inquiries />} />

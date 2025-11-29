@@ -1,6 +1,8 @@
 "use client"
-import React, { useState } from 'react';
-import { motion } from "framer-motion"
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from "framer-motion"
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://mobishaala-backend-zcxm.onrender.com';
 
 const Highlight = ({ children }) => (
   <motion.span
@@ -43,11 +45,67 @@ const OfferCard = ({ delay }) => (
   </motion.div>
 )
 
-const Hero = ({ onOpenInquiry }) => {
+const Hero = ({ onOpenInquiry, slides: propSlides, previewMode = false, previewSlideIndex = 0 }) => {
+  const [slides, setSlides] = useState(propSlides || [])
+  const [currentSlide, setCurrentSlide] = useState(previewMode ? previewSlideIndex : 0)
   const [isCallPopupOpen, setIsCallPopupOpen] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [loading, setLoading] = useState(true)
+  const prevPropSlidesRef = useRef()
+
+  useEffect(() => {
+    if (propSlides && propSlides.length > 0) {
+      // Only update if propSlides actually changed
+      const prevStr = prevPropSlidesRef.current ? JSON.stringify(prevPropSlidesRef.current) : '';
+      const newStr = JSON.stringify(propSlides);
+      
+      if (prevStr !== newStr || slides.length === 0) {
+        setSlides(propSlides)
+        setLoading(false)
+        prevPropSlidesRef.current = propSlides;
+        // Reset to first slide if current slide is out of bounds
+        if (currentSlide >= propSlides.length) {
+          setCurrentSlide(0)
+        }
+      }
+    } else if (!propSlides) {
+      fetchSlides()
+    }
+  }, [propSlides])
+
+  const fetchSlides = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/hero-section-settings/public`)
+      const data = await response.json()
+      
+      if (data.success && data.data.slides) {
+        setSlides(data.data.slides)
+      }
+    } catch (error) {
+      console.error('Error fetching hero slides:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Auto-rotate slides (only if not in preview mode)
+  useEffect(() => {
+    if (!previewMode && slides.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length)
+      }, 6000) // Change slide every 6 seconds
+      return () => clearInterval(interval)
+    }
+  }, [slides.length, previewMode])
+  
+  // Update currentSlide when previewSlideIndex changes
+  useEffect(() => {
+    if (previewMode && previewSlideIndex >= 0 && previewSlideIndex < slides.length) {
+      setCurrentSlide(previewSlideIndex)
+    }
+  }, [previewMode, previewSlideIndex, slides.length])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,11 +127,17 @@ const Hero = ({ onOpenInquiry }) => {
     },
   }
 
-  const featureHighlights = [
-    "Orchestrate your institute's sales, marketing & software with AI-powered Mobishaala.",
-    'Agentic AI End - to - End Support',
-    // 'Track applications, nudges, and payments from one agentic command center.'
-  ]
+  const goToSlide = (index) => {
+    setCurrentSlide(index)
+  }
+
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length)
+  }
+
+  const goToPrev = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+  }
 
   const handleCallRequest = (event) => {
     event.preventDefault()
@@ -99,24 +163,142 @@ const Hero = ({ onOpenInquiry }) => {
     setIsSubmitting(false)
   }
 
+  if (loading || slides.length === 0) {
+    return (
+      <section id="home" className="pt-[60px] md:pt-16 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p className="mt-2 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Ensure currentSlide is within bounds
+  const validCurrentSlide = currentSlide >= slides.length ? 0 : currentSlide
+  const currentSlideData = slides[validCurrentSlide] || slides[0]
+  const slideKey = `${currentSlideData.type}-${currentSlideData.tagline}-${currentSlideData.description}`
+
   return (
-    <section id="home" className="pt-[60px] md:pt-16 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50">
+    <section id="home" className="pt-[60px] md:pt-16 pb-0 md:pb-0 bg-gradient-to-b from-white via-white to-gray-50 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center relative">
+
           {/* Left: Headline and CTAs */}
-          <motion.div variants={containerVariants} initial="hidden" animate="visible">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={slideKey}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="relative"
+            >
             {/* Main Headline */}
             <motion.h1
               className="text-3xl sm:text-5xl md:text-4xl font-black text-gray-900 leading-tight tracking-tight"
               variants={itemVariants}
             >
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Highlight>India's first</Highlight>
-                <span>AI-Enabled</span>
+                {(() => {
+                  const tagline = currentSlideData.tagline || '';
+                  const highlightWords = currentSlideData.highlightWords || [];
+                  
+                  // If highlightWords are provided, use them
+                  if (highlightWords.length > 0) {
+                    // Sort highlightWords by length (longest first) to match phrases correctly
+                    const sortedHighlights = [...highlightWords].sort((a, b) => b.length - a.length);
+                    
+                    // Find all matches and their positions
+                    const matches = [];
+                    sortedHighlights.forEach(highlight => {
+                      const escapedHighlight = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                      const regex = new RegExp(escapedHighlight, 'gi');
+                      let match;
+                      const searchText = tagline;
+                      while ((match = regex.exec(searchText)) !== null) {
+                        matches.push({
+                          text: highlight,
+                          index: match.index,
+                          length: highlight.length
+                        });
+                      }
+                    });
+                    
+                    // Sort matches by index
+                    matches.sort((a, b) => a.index - b.index);
+                    
+                    // Remove overlapping matches (keep first/longest)
+                    const nonOverlappingMatches = [];
+                    let lastEnd = -1;
+                    matches.forEach(match => {
+                      if (match.index >= lastEnd) {
+                        nonOverlappingMatches.push(match);
+                        lastEnd = match.index + match.length;
+                      }
+                    });
+                    
+                    // Build parts array
+                    const parts = [];
+                    let currentIndex = 0;
+                    nonOverlappingMatches.forEach(match => {
+                      // Add text before match
+                      if (match.index > currentIndex) {
+                        const beforeText = tagline.substring(currentIndex, match.index);
+                        if (beforeText) {
+                          parts.push({ text: beforeText, highlight: false });
+                        }
+                      }
+                      // Add highlighted match
+                      parts.push({ text: tagline.substring(match.index, match.index + match.length), highlight: true });
+                      currentIndex = match.index + match.length;
+                    });
+                    
+                    // Add remaining text
+                    if (currentIndex < tagline.length) {
+                      const afterText = tagline.substring(currentIndex);
+                      if (afterText) {
+                        parts.push({ text: afterText, highlight: false });
+                      }
+                    }
+                    
+                    // If no matches found, just show tagline normally
+                    if (parts.length === 0) {
+                      return (
+                        <div className="flex flex-wrap items-center gap-2">
+                          {tagline.split(' ').map((word, idx) => (
+                            <span key={idx}>{word}</span>
+                          ))}
+                        </div>
+                      );
+                    }
+                    
+                    // Render parts
+                    return (
+                      <div className="flex flex-wrap items-center gap-2">
+                        {parts.map((part, idx) => {
+                          if (part.highlight) {
+                            return <Highlight key={idx}>{part.text}</Highlight>;
+                          }
+                          // Split by spaces but keep them
+                          return part.text.split(/(\s+)/).map((word, wIdx) => (
+                            <span key={`${idx}-${wIdx}`}>{word}</span>
+                          ));
+                        })}
               </div>
+                    );
+                  }
+                  
+                  // Default: no highlights, just show tagline
+                  return (
               <div className="flex flex-wrap items-center gap-2">
-                <Highlight>Education Network</Highlight>
+                      {tagline.split(' ').map((word, idx) => (
+                        <span key={idx}>{word}</span>
+                      ))}
               </div>
+                  );
+                })()}
             </motion.h1>
 
             {/* Description */}
@@ -124,13 +306,13 @@ const Hero = ({ onOpenInquiry }) => {
               className="text-gray-600 text-lg md:text-xl mt-6 max-w-lg leading-relaxed"
               variants={itemVariants}
             >
-              Mobishaala stands as a bridge between traditional teaching excellence and futuristic AI intelligence — enabling every educator to scale, every student to succeed, and every institute to thrive in the new digital era.
+                {currentSlideData.description}
             </motion.p>
 
             <motion.ul className="mt-6 space-y-3 text-gray-600 text-base" variants={itemVariants}>
-              {featureHighlights.map((point) => (
-                <li key={point} className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                {currentSlideData.points.map((point, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
                   <span>{point}</span>
                 </li>
               ))}
@@ -173,13 +355,17 @@ const Hero = ({ onOpenInquiry }) => {
               </motion.button>
             </motion.div>
           </motion.div>
+          </AnimatePresence>
 
           {/* Right: Image with Floating Cards */}
+          <AnimatePresence mode="wait">
           <motion.div
+              key={`image-${slideKey}`}
             className="relative h-96 md:h-[500px]"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.8 }}
           >
             {/* Main Image */}
             <motion.div
@@ -188,23 +374,13 @@ const Hero = ({ onOpenInquiry }) => {
               transition={{ duration: 0.3 }}
             >
               <img
-                src="/mobishaalaheroimage-1.jpg"
-                alt="Growth team using Mobishaala"
+                  src={currentSlideData.image || "/mobishaalaheroimage-1.jpg"}
+                  alt={currentSlideData.tagline}
                 className="w-full h-full object-cover"
               />
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
             </motion.div>
-
-            {/* Stat Card - Top Right */}
-            {/* <div className="absolute -top-4 -right-4 md:top-8 md:right-0 w-56 md:w-64 z-10">
-              <StatCard title="Calls orchestrated" value="330 / week" sub="AI-routed + human follow-ups" delay={0.5} />
-            </div> */}
-
-            {/* Offer Card - Bottom Left */}
-            {/* <div className="absolute -bottom-6 -left-4 md:bottom-12 md:left-0 w-72 md:w-80 z-10">
-              <OfferCard delay={0.7} />
-            </div> */}
 
             {/* Decorative Elements */}
             <motion.div
@@ -218,6 +394,7 @@ const Hero = ({ onOpenInquiry }) => {
               transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
             />
           </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
