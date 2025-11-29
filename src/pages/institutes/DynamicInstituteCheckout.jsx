@@ -281,13 +281,23 @@ const DynamicInstituteCheckout = () => {
   const pollPaymentStatus = async (orderId) => {
     try {
       const response = await fetch(`${API_BASE}/api/payments/order/${orderId}`);
+      if (!response.ok) {
+        throw new Error(`Payment status check failed: ${response.status}`);
+      }
       const data = await response.json();
-      if (data.success) {
+      if (data.success && data.data) {
         setTransactionStatus(data.data.status);
+        setSubmitted(true);
+      } else {
+        // If API returns error, show failed status
+        setTransactionStatus('failed');
         setSubmitted(true);
       }
     } catch (error) {
       console.error('Payment status check error:', error);
+      // On error, show failed status so user sees proper message
+      setTransactionStatus('failed');
+      setSubmitted(true);
     } finally {
       setProcessingPayment(false);
     }
@@ -355,20 +365,72 @@ const DynamicInstituteCheckout = () => {
   }
 
   if (submitted) {
+    // Determine UI colors and icon based on status
+    const isSuccess = transactionStatus === 'paid';
+    const isPending = transactionStatus === 'pending';
+    const isFailed = transactionStatus === 'failed' || transactionStatus === 'cancelled';
+    const isNeutral = transactionStatus === 'gateway_unavailable' || transactionStatus === 'price_missing' || transactionStatus === 'initiated';
+    
+    const bgColor = isSuccess 
+      ? 'bg-green-50' 
+      : isPending 
+      ? 'bg-amber-50' 
+      : isFailed 
+      ? 'bg-red-50' 
+      : 'bg-blue-50';
+    
+    const iconBgColor = isSuccess 
+      ? 'bg-green-100' 
+      : isPending 
+      ? 'bg-amber-100' 
+      : isFailed 
+      ? 'bg-red-100' 
+      : 'bg-blue-100';
+    
+    const iconColor = isSuccess 
+      ? 'text-green-600' 
+      : isPending 
+      ? 'text-amber-600' 
+      : isFailed 
+      ? 'text-red-600' 
+      : 'text-blue-600';
+    
+    const iconSvg = isSuccess ? (
+      <svg className={`w-10 h-10 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      </svg>
+    ) : isFailed ? (
+      <svg className={`w-10 h-10 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ) : isPending ? (
+      <svg className={`w-10 h-10 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ) : (
+      <svg className={`w-10 h-10 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    );
+    
     return (
       <div className="min-h-screen bg-white">
         <DynamicInstituteNavbar institute={institute} />
         <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="max-w-lg mx-auto text-center">
-            <div className="bg-green-50 rounded-3xl p-12">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+            <div className={`${bgColor} rounded-3xl p-12`}>
+              <div className={`w-20 h-20 ${iconBgColor} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                {iconSvg}
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-4">
                 {transactionStatus === 'paid'
                   ? 'Payment received 🎉'
+                  : transactionStatus === 'failed'
+                  ? 'Payment not completed'
+                  : transactionStatus === 'cancelled'
+                  ? 'Payment cancelled'
+                  : transactionStatus === 'pending'
+                  ? 'Payment pending'
                   : transactionStatus === 'gateway_unavailable'
                   ? 'We have your request'
                   : transactionStatus === 'price_missing'
@@ -382,10 +444,20 @@ const DynamicInstituteCheckout = () => {
                       Your payment for <strong>{course?.title}</strong> is confirmed. A counselor will call you shortly
                       and provide you complete access to your course.
                     </>
+                  ) : transactionStatus === 'failed' ? (
+                    <>
+                      Aapka payment complete nahi ho paya. Kripya dobara try karein ya hamare counselor se contact karein.
+                      Ham aapko jaldi hi ek fresh payment link bhej denge.
+                    </>
+                  ) : transactionStatus === 'cancelled' ? (
+                    <>
+                      Aapne payment cancel kar diya hai. Agar aap course lena chahte hain, to kripya dobara try karein.
+                      Ham aapki madad ke liye yahaan hain.
+                    </>
                   ) : transactionStatus === 'pending' ? (
                     <>
-                      Your payment session was opened but is still pending. We have logged your details and will help you
-                      complete the payment.
+                      Aapka payment abhi pending hai. Kripya thodi der wait karein. Agar payment complete nahi hua, to
+                      hamare counselor aapko fresh payment link bhej denge.
                     </>
                   ) : transactionStatus === 'gateway_unavailable' ? (
                     <>
@@ -399,8 +471,7 @@ const DynamicInstituteCheckout = () => {
                     </>
                   ) : (
                     <>
-                      The payment attempt didn&apos;t complete. A counselor will contact you with the next steps or a
-                      fresh link.
+                      Payment status check kar rahe hain. Agar koi issue ho, to hamare counselor aapki madad karenge.
                     </>
                   )
                 ) : (
