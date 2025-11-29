@@ -350,8 +350,8 @@ const DynamicInstituteCheckout = () => {
                 {paytmReady ? (
                   transactionStatus === 'paid' ? (
                     <>
-                      Your payment for <strong>{course?.title}</strong> is confirmed. Our team will activate access and
-                      reach out shortly.
+                      Your payment for <strong>{course?.title}</strong> is confirmed. A counselor will call you shortly
+                      and provide you complete access to your course.
                     </>
                   ) : transactionStatus === 'pending' ? (
                     <>
